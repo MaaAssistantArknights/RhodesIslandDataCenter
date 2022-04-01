@@ -1,5 +1,3 @@
 ﻿namespace RIDC.Schema.Json;
 
-public record JsonItem : Item
-{
-}
+public record JsonItem : Item;

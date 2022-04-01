@@ -6,8 +6,4 @@
         <Nullable>disable</Nullable>
     </PropertyGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\RIDC.Shared\RIDC.Shared.csproj" />
-    </ItemGroup>
-
 </Project>

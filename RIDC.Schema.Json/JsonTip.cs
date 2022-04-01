@@ -1,5 +1,3 @@
 ﻿namespace RIDC.Schema.Json;
 
-public record JsonTip : Tip
-{
-}
+public record JsonTip : Tip;
