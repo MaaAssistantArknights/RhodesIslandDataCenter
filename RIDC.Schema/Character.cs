@@ -12,7 +12,7 @@ public record Character
     [JsonPropertyName("nation")] public Power Nation { get; set; }
     [JsonPropertyName("groupId")] public string GroupId { get; set; }
     [JsonPropertyName("teamId")] public string TeamId { get; set; }
-    [JsonPropertyName("displayNumber")] public string DisplayName { get; set; }
+    [JsonPropertyName("displayNumber")] public string DisplayNumber { get; set; }
     [JsonPropertyName("tokenKey")] public string TokenKey { get; set; }
     [JsonPropertyName("appellation")] public string Appellation { get; set; }
     [JsonPropertyName("position")] public string Position { get; set; }
