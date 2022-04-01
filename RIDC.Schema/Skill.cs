@@ -6,4 +6,5 @@ public record Skill
 {
     [JsonPropertyName("skillId")] public string SkillId { get; set; }
     [JsonPropertyName("name")] public string Name { get; set; }
+    [JsonIgnore] public ICollection<Character> Characters { get; set; }
 }
