@@ -2,19 +2,19 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Schema", "Schema", "{A348925A-518E-4B9C-8761-3A17ACA6A469}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RIDC.Schema", "RIDC.Schema\RIDC.Schema.csproj", "{63A186C7-7D30-4CDB-847B-C43371C35E40}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RIDC.Schema", "src\RIDC.Schema\RIDC.Schema.csproj", "{63A186C7-7D30-4CDB-847B-C43371C35E40}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RIDC.Schema.Json", "RIDC.Schema.Json\RIDC.Schema.Json.csproj", "{6524EAFB-5C1E-47AF-8056-0CD021EE52FA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RIDC.Schema.Json", "src\RIDC.Schema.Json\RIDC.Schema.Json.csproj", "{6524EAFB-5C1E-47AF-8056-0CD021EE52FA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{056EEE0F-7969-47D2-9AAD-36E4DE0A4355}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RIDC.Database", "RIDC.Database\RIDC.Database.csproj", "{24B02D40-7BEF-4D0A-8AB2-8FAAD9EA0143}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RIDC.Database", "src\RIDC.Database\RIDC.Database.csproj", "{24B02D40-7BEF-4D0A-8AB2-8FAAD9EA0143}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RIDC.Database.Postgres", "RIDC.Database.Postgres\RIDC.Database.Postgres.csproj", "{CB76F1CA-A8B6-49FA-BFAE-0B395F2FD54F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RIDC.Database.Postgres", "src\RIDC.Database.Postgres\RIDC.Database.Postgres.csproj", "{CB76F1CA-A8B6-49FA-BFAE-0B395F2FD54F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{6FE62392-F292-431F-B1B8-896FFC546AD7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RIDC.Shared", "RIDC.Shared\RIDC.Shared.csproj", "{C1CB5C87-C1C4-4960-BF16-345DEDBDD403}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RIDC.Shared", "src\RIDC.Shared\RIDC.Shared.csproj", "{C1CB5C87-C1C4-4960-BF16-345DEDBDD403}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
