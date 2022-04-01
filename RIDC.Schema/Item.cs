@@ -7,7 +7,7 @@ public record Item
     [JsonPropertyName("itemId")] public string ItemId { get; set; }
     [JsonPropertyName("name")] public string Name { get; set; }
     [JsonPropertyName("description")] public string Description { get; set; }
-    [JsonPropertyName("rarity")] public string Rarity { get; set; }
+    [JsonPropertyName("rarity")] public int Rarity { get; set; }
     [JsonPropertyName("iconId")] public string IconId { get; set; }
     [JsonPropertyName("stackIconId")] public string StackIconId { get; set; }
     [JsonPropertyName("sortId")] public int SortId { get; set; }

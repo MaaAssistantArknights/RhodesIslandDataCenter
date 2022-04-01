@@ -2,8 +2,8 @@
 
 namespace RIDC.Schema.Json;
 
-public record JsonStage
+public record JsonStage : Stage
 {
-    [JsonPropertyName("slProgress")] public int StoryLineProgress { get; set; }
-    [JsonPropertyName("hilightMark")] public bool HighLightMark { get; set; }
+    [JsonPropertyName("slProgress")] public new int StoryLineProgress { get; set; }
+    [JsonPropertyName("hilightMark")] public new bool HighLightMark { get; set; }
 }

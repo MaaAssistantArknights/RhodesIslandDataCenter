@@ -5,7 +5,7 @@ namespace RIDC.Schema;
 public record Charm
 {
     [JsonPropertyName("charmId")] public string CharmId { get; set; }
-    [JsonPropertyName("sort")] public string Sort { get; set; }
+    [JsonPropertyName("sort")] public int Sort { get; set; }
     [JsonPropertyName("name")] public string Name { get; set; }
     [JsonPropertyName("icon")] public string Icon { get; set; }
     [JsonPropertyName("itemUsage")] public string ItemUsage { get; set; }
