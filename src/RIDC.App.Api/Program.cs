@@ -1,4 +1,5 @@
 using System.Reflection;
+using RIDC.Database.Postgres;
 using Serilog;
 
 #region Find Configuration File
@@ -57,6 +58,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog();
 
+builder.Configuration.AddConfiguration(configuration);
+builder.Services.AddDbContext<RhodesIslandDbContextBase, RhodesIslandDbContext>();
 builder.Services.AddControllers();
 builder.Services.AddCors(options =>
 {
