@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\RIDC.Database.Migrations.MariaDb\RIDC.Database.Migrations.MariaDb.csproj" />
+      <ProjectReference Include="..\RIDC.Database.Migrations.MySqlClassic\RIDC.Database.Migrations.MySqlClassic.csproj" />
+      <ProjectReference Include="..\RIDC.Database.Migrations.MySql\RIDC.Database.Migrations.MySql.csproj" />
+      <ProjectReference Include="..\RIDC.Database.Migrations.PgSql\RIDC.Database.Migrations.PgSql.csproj" />
+      <ProjectReference Include="..\RIDC.Database.Migrations.Sqlite\RIDC.Database.Migrations.Sqlite.csproj" />
+    </ItemGroup>
+
+</Project>
