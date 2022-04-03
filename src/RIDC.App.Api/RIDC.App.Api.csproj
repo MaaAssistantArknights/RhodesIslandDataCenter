@@ -14,8 +14,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\RIDC.Database.MySql\RIDC.Database.MySql.csproj" />
-      <ProjectReference Include="..\RIDC.Database.Postgres\RIDC.Database.Postgres.csproj" />
+      <ProjectReference Include="..\RIDC.Provider.Configuration\RIDC.Provider.Configuration.csproj" />
+      <ProjectReference Include="..\RIDC.Provider.Database\RIDC.Provider.Database.csproj" />
     </ItemGroup>
 
 </Project>

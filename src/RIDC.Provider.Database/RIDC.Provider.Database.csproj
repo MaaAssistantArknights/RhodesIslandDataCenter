@@ -3,15 +3,12 @@
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
+        <Nullable>disable</Nullable>
     </PropertyGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\RIDC.Database\RIDC.Database.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="MySql.EntityFrameworkCore" Version="6.0.0" />
+      <ProjectReference Include="..\RIDC.Provider.Configuration\RIDC.Provider.Configuration.csproj" />
     </ItemGroup>
 
 </Project>

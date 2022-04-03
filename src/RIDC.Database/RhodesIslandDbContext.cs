@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using RIDC.Schema;
 
 namespace RIDC.Database;
 
-public abstract class RhodesIslandDbContextBase : DbContext
+public class RhodesIslandDbContext : DbContext
 {
     public DbSet<Character> Characters { get; set; }
     public DbSet<Charm> Charms { get; set; }
@@ -13,6 +14,9 @@ public abstract class RhodesIslandDbContextBase : DbContext
     public DbSet<Stage> Stages { get; set; }
     public DbSet<Tip> Tips { get; set; }
     public DbSet<Zone> Zones { get; set; }
+    public DbSet<Miscellaneous> Miscellaneous { get; set; }
+
+    public RhodesIslandDbContext(DbContextOptions<RhodesIslandDbContext> options) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -31,7 +35,10 @@ public abstract class RhodesIslandDbContextBase : DbContext
             p.Property(x => x.TagList)
                 .HasConversion(
                     s => stringCollectionToStringConvertor.Invoke(s),
-                    s => stringToStringCollectionConvertor.Invoke(s));
+                    s => stringToStringCollectionConvertor.Invoke(s),
+                    new ValueComparer<ICollection<string>>(
+                        (s1, s2) => s1.SequenceEqual(s2),
+                        s => s.GetHashCode()));
         });
 
         #endregion
@@ -96,6 +103,15 @@ public abstract class RhodesIslandDbContextBase : DbContext
         {
             p.HasKey(x => x.ZoneId);
             p.HasMany(x => x.Stages);
+        });
+
+        #endregion
+
+        #region Miscellaneous
+
+        modelBuilder.Entity<Miscellaneous>(p =>
+        {
+            p.HasKey(x => x.Key);
         });
 
         #endregion

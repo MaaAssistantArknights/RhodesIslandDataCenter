@@ -1,53 +1,13 @@
-using System.Reflection;
 using RIDC.App.Api.GraphQL;
-using RIDC.Database.MySql;
-using RIDC.Database.Postgres;
+using RIDC.Database;
+using RIDC.Provider.Configuration;
+using RIDC.Provider.Database;
 using Serilog;
 
-#region Find Configuration File
-
-var configurationFileEnvironmentVariable = Environment.GetEnvironmentVariable("RIDC_API_CONFIGURATION");
-var assemblyPath = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory!.FullName;
-
-string configFile;
-if (File.Exists(configurationFileEnvironmentVariable))
-{
-    configFile = configurationFileEnvironmentVariable;
-}
-else
-{
-    var assemblyPathConfigurationFile = System.IO.Path.Combine(assemblyPath, "appsettings.json");
-    if (File.Exists(assemblyPathConfigurationFile))
-    {
-        configFile = assemblyPathConfigurationFile;
-    }
-    else
-    {
-        Console.Error.WriteLine("找不到配置文件");
-        return;
-    }
-}
-
-#endregion
-
-#region Configuraion And Logger
-
-var configurationBuilder = new ConfigurationBuilder()
-    .AddJsonFile(configFile);
-
-if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
-{
-    configurationBuilder.AddJsonFile(System.IO.Path.Combine(assemblyPath, "appsettings.Development.json"), true);
-}
-
-configurationBuilder
-    .AddEnvironmentVariables("RIDC:")
-    .AddCommandLine(args);
-
-var configuration = configurationBuilder.Build();
+#region Logger
 
 Log.Logger = new LoggerConfiguration()
-    .ReadFrom.Configuration(configuration)
+    .ReadFrom.Configuration(RidcConfigurationProvider.GetProvider().GetConfiguration())
     .CreateLogger();
 
 Log.Logger.Information("启动中...");
@@ -60,20 +20,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog();
 
-builder.Configuration.AddConfiguration(configuration);
+builder.Configuration.AddRidcConfigurations();
 
-switch (configuration["Database:Type"])
-{
-    case "Postgres":
-        builder.Services.AddDbContext<RhodesIslandDbContextBase, RhodesIslandDbContextPostgres>();
-        break;
-    case "MySql":
-        builder.Services.AddDbContext<RhodesIslandDbContextBase, RhodesIslandDbContextMySql>();
-        break;
-    default:
-        Log.Fatal("未知的数据库类型");
-        return;
-}
+builder.Services.AddRidcOptions();
+builder.Services.AddRidcDbContextPoolFactory(RidcConfigurationProvider.GetProvider());
 
 builder.Services.AddControllers();
 builder.Services.AddCors(options =>
@@ -85,8 +35,9 @@ builder.Services.AddCors(options =>
             .AllowAnyOrigin();
     });
 });
+
 builder.Services.AddGraphQLServer()
-    .RegisterDbContext<RhodesIslandDbContextBase>()
+    .RegisterDbContext<RhodesIslandDbContext>()
     .AddQueryType<Query>()
     .AddFiltering()
     .AddSorting();
