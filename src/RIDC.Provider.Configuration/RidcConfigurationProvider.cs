@@ -42,6 +42,12 @@ public class RidcConfigurationProvider
             configurationBuilder.AddJsonFile("appsettings.Development.json", true, true);
         }
 
+        configurationBuilder.AddInMemoryCollection(new List<KeyValuePair<string, string>>
+        {
+            new("AssemblyPath", assemblyPath),
+            new("ConfigurationFile", configFile)
+        });
+
         _configuration = configurationBuilder.Build();
     }
 
