@@ -6,7 +6,7 @@ using Serilog;
 
 #region Find Configuration File
 
-var configurationFileEnvironmentVariable = Environment.GetEnvironmentVariable("RIDC_CONFIGURATION_FILE");
+var configurationFileEnvironmentVariable = Environment.GetEnvironmentVariable("RIDC_API_CONFIGURATION");
 var assemblyPath = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory!.FullName;
 
 string configFile;
