@@ -1,4 +1,5 @@
 using System.Reflection;
+using RIDC.App.Api.GraphQL;
 using RIDC.Database.Postgres;
 using Serilog;
 
@@ -14,7 +15,7 @@ if (File.Exists(configurationFileEnvironmentVariable))
 }
 else
 {
-    var assemblyPathConfigurationFile = Path.Combine(assemblyPath, "appsettings.json");
+    var assemblyPathConfigurationFile = System.IO.Path.Combine(assemblyPath, "appsettings.json");
     if (File.Exists(assemblyPathConfigurationFile))
     {
         configFile = assemblyPathConfigurationFile;
@@ -35,7 +36,7 @@ var configurationBuilder = new ConfigurationBuilder()
 
 if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
 {
-    configurationBuilder.AddJsonFile(Path.Combine(assemblyPath, "appsettings.Development.json"), true);
+    configurationBuilder.AddJsonFile(System.IO.Path.Combine(assemblyPath, "appsettings.Development.json"), true);
 }
 
 configurationBuilder
@@ -70,6 +71,11 @@ builder.Services.AddCors(options =>
             .AllowAnyOrigin();
     });
 });
+builder.Services.AddGraphQLServer()
+    .RegisterDbContext<RhodesIslandDbContextBase>()
+    .AddQueryType<Query>()
+    .AddFiltering()
+    .AddSorting();
 
 #endregion
 
@@ -77,8 +83,10 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+app.UseSerilogRequestLogging();
 app.UseCors();
 app.MapControllers();
+app.MapGraphQL();
 app.Run();
 
 #endregion
