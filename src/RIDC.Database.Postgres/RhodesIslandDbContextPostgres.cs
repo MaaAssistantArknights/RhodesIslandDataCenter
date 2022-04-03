@@ -4,18 +4,18 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure;
 
 namespace RIDC.Database.Postgres;
 
-public class RhodesIslandDbContext : RhodesIslandDbContextBase
+public class RhodesIslandDbContextPostgres : RhodesIslandDbContextBase
 {
     private readonly string _pgSqlConnectionString;
     private readonly Action<NpgsqlDbContextOptionsBuilder> _pgOptionsAction;
 
-    public RhodesIslandDbContext(IConfiguration configuration)
+    public RhodesIslandDbContextPostgres(IConfiguration configuration)
     {
         _pgSqlConnectionString = configuration["Database:ConnectionString"];
         _pgOptionsAction = null;
     }
 
-    public RhodesIslandDbContext(string pgSqlConnectionString, Action<NpgsqlDbContextOptionsBuilder> pgOptionsAction = null)
+    public RhodesIslandDbContextPostgres(string pgSqlConnectionString, Action<NpgsqlDbContextOptionsBuilder> pgOptionsAction = null)
     {
         _pgSqlConnectionString = pgSqlConnectionString;
         _pgOptionsAction = pgOptionsAction;

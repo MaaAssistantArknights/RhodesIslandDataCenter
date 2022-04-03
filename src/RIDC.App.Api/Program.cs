@@ -1,5 +1,6 @@
 using System.Reflection;
 using RIDC.App.Api.GraphQL;
+using RIDC.Database.MySql;
 using RIDC.Database.Postgres;
 using Serilog;
 
@@ -60,7 +61,20 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog();
 
 builder.Configuration.AddConfiguration(configuration);
-builder.Services.AddDbContext<RhodesIslandDbContextBase, RhodesIslandDbContext>();
+
+switch (configuration["Database:Type"])
+{
+    case "Postgres":
+        builder.Services.AddDbContext<RhodesIslandDbContextBase, RhodesIslandDbContextPostgres>();
+        break;
+    case "MySql":
+        builder.Services.AddDbContext<RhodesIslandDbContextBase, RhodesIslandDbContextMySql>();
+        break;
+    default:
+        Log.Fatal("未知的数据库类型");
+        return;
+}
+
 builder.Services.AddControllers();
 builder.Services.AddCors(options =>
 {
