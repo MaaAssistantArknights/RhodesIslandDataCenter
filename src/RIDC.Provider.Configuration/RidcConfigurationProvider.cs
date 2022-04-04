@@ -42,8 +42,16 @@ public class RidcConfigurationProvider
         {
             new("AssemblyPath", assemblyPath),
             new("ConfigurationFile", configFile),
-            new ("DataDirectory", dataDirectory)
+            new("DataDirectory", dataDirectory)
         });
+
+        if (IsDevelopment())
+        {
+            configurationBuilder.AddInMemoryCollection(new List<KeyValuePair<string, string>>
+            {
+                new("DevConfigurationFile", Path.Combine(dataDirectory, "appsettings.Development.json")),
+            });
+        }
 
         _configuration = configurationBuilder.Build();
     }

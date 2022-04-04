@@ -19,8 +19,17 @@ public static class SerilogProvider
 
         var option = configurationProvider.GetOption<ElasticLoggerOption>();
 
+        var loggingFileWritePath = configurationProvider.GetConfiguration().GetValue<string>("Serilog:WriteTo:1:Args:path");
+        var loggerConfiguration = new ConfigurationBuilder()
+            .AddConfiguration(RidcConfigurationProvider.GetProvider().GetConfiguration())
+            .AddInMemoryCollection(new List<KeyValuePair<string, string>>
+            {
+                new("Serilog:WriteTo:1:Args:path", loggingFileWritePath.Replace("%{APP NAME PLACEHOLDER}%", appName))
+            })
+            .Build();
+
         var conf = new LoggerConfiguration()
-            .ReadFrom.Configuration(configurationProvider.GetConfiguration());
+            .ReadFrom.Configuration(loggerConfiguration);
 
         if (option.EnableElasticSearch)
         {
