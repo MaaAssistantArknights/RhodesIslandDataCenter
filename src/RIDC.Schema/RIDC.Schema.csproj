@@ -10,8 +10,4 @@
       <ProjectReference Include="..\RIDC.Shared\RIDC.Shared.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <PackageReference Include="CompareNETObjects" Version="4.76.0" />
-    </ItemGroup>
-
 </Project>

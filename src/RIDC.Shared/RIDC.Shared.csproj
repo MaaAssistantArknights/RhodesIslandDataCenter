@@ -6,4 +6,9 @@
         <Nullable>disable</Nullable>
     </PropertyGroup>
 
+
+  <ItemGroup>
+    <PackageReference Include="CompareNETObjects" Version="4.76.0"/>
+  </ItemGroup>
+
 </Project>
