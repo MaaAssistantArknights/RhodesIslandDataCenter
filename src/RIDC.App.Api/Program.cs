@@ -3,13 +3,12 @@ using RIDC.App.Api.Middlewares;
 using RIDC.Database;
 using RIDC.Provider.Configuration;
 using RIDC.Provider.Database;
+using RIDC.Provider.Logger;
 using Serilog;
 
 #region Logger
 
-Log.Logger = new LoggerConfiguration()
-    .ReadFrom.Configuration(RidcConfigurationProvider.GetProvider().GetConfiguration())
-    .CreateLogger();
+Log.Logger = SerilogProvider.GetLogger(RidcConfigurationProvider.GetProvider());
 
 Log.Logger.Information("启动中...");
 
