@@ -1,4 +1,5 @@
 using RIDC.App.Api.GraphQL;
+using RIDC.App.Api.Middlewares;
 using RIDC.Database;
 using RIDC.Provider.Configuration;
 using RIDC.Provider.Database;
@@ -22,8 +23,13 @@ builder.Host.UseSerilog();
 
 builder.Configuration.AddRidcConfigurations();
 
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.AllowSynchronousIO = true;
+});
+
 builder.Services.AddRidcOptions();
-builder.Services.AddRidcDbContextPoolFactory(RidcConfigurationProvider.GetProvider());
+builder.Services.AddRidcDbContext(RidcConfigurationProvider.GetProvider());
 
 builder.Services.AddControllers();
 builder.Services.AddCors(options =>
@@ -48,7 +54,7 @@ builder.Services.AddGraphQLServer()
 
 var app = builder.Build();
 
-app.UseSerilogRequestLogging();
+app.UseMiddleware<RequestLoggingMiddleware>();
 app.UseCors();
 app.MapControllers();
 app.MapGraphQL();
