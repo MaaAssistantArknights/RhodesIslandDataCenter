@@ -4,9 +4,15 @@ using RIDC.Provider.Database;
 using RIDC.Provider.Logger;
 using Serilog;
 
+var appName = Environment.GetEnvironmentVariable("RIDC_UPDATER_APP_NAME");
+if (string.IsNullOrEmpty(appName))
+{
+    appName = "ridc-app-api";
+}
+
 #region Logger
 
-Log.Logger = SerilogProvider.GetLogger(RidcConfigurationProvider.GetProvider(), "ridc-app-updater");
+Log.Logger = SerilogProvider.GetLogger(RidcConfigurationProvider.GetProvider(), appName);
 
 Log.Logger.Information("启动中...");
 
