@@ -28,7 +28,7 @@ builder.WebHost.ConfigureKestrel(options =>
 });
 
 builder.Services.AddRidcOptions();
-builder.Services.AddRidcDbContext(RidcConfigurationProvider.GetProvider());
+builder.Services.AddRidcDbContextPoolFactory(RidcConfigurationProvider.GetProvider());
 
 builder.Services.AddControllers();
 builder.Services.AddCors(options =>
@@ -42,7 +42,7 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddGraphQLServer()
-    .RegisterDbContext<RhodesIslandDbContext>()
+    .RegisterDbContext<RhodesIslandDbContext>(DbContextKind.Pooled)
     .AddQueryType<Query>()
     .AddFiltering()
     .AddSorting();
