@@ -53,4 +53,10 @@ public class Query
     [UseSorting]
     public IQueryable<Zone> GetZone([Service] RhodesIslandDbContext db)
         => db.Zones.Include(x => x.Stages);
+
+    public Miscellaneous GetVersion([Service] RhodesIslandDbContext db)
+    {
+        var v = db.Miscellaneous.FirstOrDefault(x => x.Key == "version");
+        return v ?? new Miscellaneous { Key = "version", Value = "" };
+    }
 }
