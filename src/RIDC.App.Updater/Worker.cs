@@ -83,7 +83,7 @@ public class Worker : BackgroundService
             }
 
             var versionString = await versionResponse.Content.ReadAsStringAsync(stoppingToken);
-            _logger.LogDebug("从 GitHub 获取到版本：{Version}", versionString);
+            _logger.LogDebug("从 GitHub 获取到版本：{GitHubVersion}", versionString);
 
             #endregion
 
@@ -92,11 +92,11 @@ public class Worker : BackgroundService
             var inStoreVersion = db.Miscellaneous.FirstOrDefault(x => x.Key == "version");
             if (inStoreVersion?.Value == versionString)
             {
-                _logger.LogInformation("版本无变化，{Version}", inStoreVersion.Value);
+                _logger.LogInformation("版本无变化，{LocalVersion}", inStoreVersion.Value);
                 return;
             }
 
-            _logger.LogInformation("版本更新：{Old} -> {New}", inStoreVersion, versionString);
+            _logger.LogInformation("版本更新：{LocalVersion} -> {GitHubVersion}", inStoreVersion, versionString);
 
             #endregion
 
@@ -372,7 +372,7 @@ public class Worker : BackgroundService
 
             sw.Stop();
 
-            _logger.LogInformation("更新运行结束，耗时 {Time} ms，{Changes} 条数据库修改记录",
+            _logger.LogInformation("更新运行结束，耗时 {UpdateTime} ms，{UpdateDbChanges} 条数据库修改记录",
                 sw.ElapsedMilliseconds, changes);
         }
         catch (Exception e)
