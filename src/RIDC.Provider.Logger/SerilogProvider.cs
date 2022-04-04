@@ -17,7 +17,7 @@ public static class SerilogProvider
             return s_logger;
         }
 
-        var option = configurationProvider.GetOption<ElasticLoggerOption>("ElasticLogger");
+        var option = configurationProvider.GetOption<ElasticLoggerOption>();
 
         var conf = new LoggerConfiguration()
             .ReadFrom.Configuration(configurationProvider.GetConfiguration());

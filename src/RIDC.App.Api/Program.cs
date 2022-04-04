@@ -2,6 +2,7 @@ using RIDC.App.Api.GraphQL;
 using RIDC.App.Api.Middlewares;
 using RIDC.Database;
 using RIDC.Provider.Configuration;
+using RIDC.Provider.Configuration.Options;
 using RIDC.Provider.Database;
 using RIDC.Provider.Logger;
 using Serilog;
@@ -17,6 +18,13 @@ Log.Logger.Information("启动中...");
 #region Web Application Builder
 
 var builder = WebApplication.CreateBuilder(args);
+
+if (RidcConfigurationProvider.IsInsideDocker() is false)
+{
+    var apiOption = RidcConfigurationProvider.GetProvider().GetOption<ApiOption>();
+    var url = $"http://{apiOption.Host}:{apiOption.Port}";
+    builder.WebHost.UseUrls(url);
+}
 
 builder.Host.UseSerilog();
 

@@ -5,6 +5,7 @@ using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using RIDC.Database;
+using RIDC.Provider.Configuration;
 using RIDC.Provider.Configuration.Options;
 using RIDC.Provider.Database;
 using RIDC.Schema;
@@ -20,7 +21,6 @@ public class Worker : BackgroundService
 {
     private readonly ILogger<Worker> _logger;
     private readonly IServiceProvider _serviceProvider;
-    private readonly IConfiguration _configuration;
 
     private readonly DirectoryInfo _repoDirectory;
 
@@ -28,9 +28,8 @@ public class Worker : BackgroundService
     {
         _logger = logger;
         _serviceProvider = serviceProvider;
-        _configuration = configuration;
 
-        _repoDirectory = new DirectoryInfo(Path.Combine(_configuration["AssemblyPath"], "Repo"));
+        _repoDirectory = new DirectoryInfo(Path.Combine(configuration["DataDirectory"], "repo"));
 
         ReCreateRepoDirectory();
     }
@@ -40,7 +39,7 @@ public class Worker : BackgroundService
         while (stoppingToken.IsCancellationRequested is false)
         {
             await Run(stoppingToken);
-            await Task.Delay(_configuration.GetValue<int>("Update:Interval") * 60 * 1000, stoppingToken);
+            await Task.Delay(RidcConfigurationProvider.GetProvider().GetOption<UpdaterOption>().Interval * 60 * 1000, stoppingToken);
         }
     }
 
@@ -56,7 +55,7 @@ public class Worker : BackgroundService
             sw.Start();
 
             using var scope = _serviceProvider.CreateScope();
-            var option = scope.ServiceProvider.GetRequiredService<IOptionsSnapshot<UpdateOption>>();
+            var option = scope.ServiceProvider.GetRequiredService<IOptionsSnapshot<UpdaterOption>>();
             if (OptionValidation(option) is false)
             {
                 throw new Exception("更新配置错误");
@@ -388,7 +387,7 @@ public class Worker : BackgroundService
         }
     }
 
-    private static bool OptionValidation(IOptions<UpdateOption> option)
+    private static bool OptionValidation(IOptions<UpdaterOption> option)
     {
         return option.Value?.Method is "Download" or "Clone";
     }

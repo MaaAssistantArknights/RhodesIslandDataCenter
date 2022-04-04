@@ -10,42 +10,39 @@ public class RidcConfigurationProvider
 
     private RidcConfigurationProvider()
     {
-        var configurationFileEnvironmentVariable = Environment.GetEnvironmentVariable("RIDC_API_CONFIGURATION");
         var assemblyPath = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory!.FullName;
+        var dataDirectory = Path.Combine(assemblyPath, "data");
 
-        string configFile;
-        if (File.Exists(configurationFileEnvironmentVariable))
+        if (Directory.Exists(dataDirectory) is false)
         {
-            configFile = configurationFileEnvironmentVariable;
+            Directory.CreateDirectory(dataDirectory);
         }
-        else
+
+        var configFile = Path.Combine(dataDirectory, "appsettings.json");
+        if (File.Exists(configFile) is false)
         {
-            var assemblyPathConfigurationFile = Path.Combine(assemblyPath, "appsettings.json");
-            if (File.Exists(assemblyPathConfigurationFile))
-            {
-                configFile = assemblyPathConfigurationFile;
-            }
-            else
-            {
-                Console.Error.WriteLine("找不到配置文件");
-                return;
-            }
+            File.Copy(Path.Combine(assemblyPath, "appsettings.json"), configFile);
         }
 
         var configurationBuilder = new ConfigurationBuilder()
             .AddJsonFile(configFile, false, true)
             .AddEnvironmentVariables("RIDC_");
 
-        if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development" ||
-            Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") == "Development")
+        if (IsDevelopment())
         {
+            if (File.Exists(Path.Combine(dataDirectory, "appsettings.Development.json")) is false)
+            {
+                File.Copy(Path.Combine(assemblyPath, "appsettings.Development.json"),
+                    Path.Combine(dataDirectory, "appsettings.Development.json"));
+            }
             configurationBuilder.AddJsonFile("appsettings.Development.json", true, true);
         }
 
         configurationBuilder.AddInMemoryCollection(new List<KeyValuePair<string, string>>
         {
             new("AssemblyPath", assemblyPath),
-            new("ConfigurationFile", configFile)
+            new("ConfigurationFile", configFile),
+            new ("DataDirectory", dataDirectory)
         });
 
         _configuration = configurationBuilder.Build();
@@ -61,11 +58,23 @@ public class RidcConfigurationProvider
         return _configuration;
     }
 
-    public T GetOption<T>(string section) where T : new()
+    public T GetOption<T>() where T : new()
     {
+        var name = typeof(T).Name.Replace("Option", string.Empty);
         var obj = new T();
-        _configuration.GetSection(section)
+        _configuration.GetSection(name)
             .Bind(obj);
         return obj;
+    }
+
+    public static bool IsInsideDocker()
+    {
+        return Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") is "true";
+    }
+
+    public static bool IsDevelopment()
+    {
+        return Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development" ||
+            Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") == "Development";
     }
 }

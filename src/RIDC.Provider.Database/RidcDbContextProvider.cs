@@ -38,7 +38,7 @@ public static class RidcDbContextProvider
 
     public static IServiceCollection AddRidcDbContext(this IServiceCollection serviceCollection, RidcConfigurationProvider configurationProvider)
     {
-        var dbOption = configurationProvider.GetOption<DatabaseOption>("Database");
+        var dbOption = configurationProvider.GetOption<DatabaseOption>();
 
         serviceCollection.AddDbContext<RhodesIslandDbContext>(options => options.SelectDatabase(dbOption));
 
@@ -47,7 +47,7 @@ public static class RidcDbContextProvider
 
     public static IServiceCollection AddRidcDbContextPoolFactory(this IServiceCollection serviceCollection, RidcConfigurationProvider configurationProvider)
     {
-        var dbOption = configurationProvider.GetOption<DatabaseOption>("Database");
+        var dbOption = configurationProvider.GetOption<DatabaseOption>();
 
         serviceCollection.AddPooledDbContextFactory<RhodesIslandDbContext>(options => options.SelectDatabase(dbOption));
 

@@ -1,6 +1,6 @@
 ﻿namespace RIDC.Provider.Configuration.Options;
 
-public record UpdateOption
+public record UpdaterOption
 {
     public string UserAgent { get; set; }
     public string Proxy { get; set; }
