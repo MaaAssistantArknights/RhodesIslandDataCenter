@@ -14,7 +14,7 @@ public class RequestLoggingMiddleware
         _logger = logger;
     }
 
-    private const string Template = "{Method} {Path} {QueryString} {Protocol} with {Body} - {UserAgent} from {Ip} responded {StatusCode} in {Time} ms";
+    private const string Template = "{Method} {Path} {QueryString} {Protocol} with {Body} - {UserAgent} from {Ip} responded {StatusCode} in {RequestProcessTime} ms";
 
     private record RequestLog(string Method, string Ip, string Path, string QueryString, string Body, string Protocol, string UserAgent);
     private record ResponseLog(int StatusCode, string Time);

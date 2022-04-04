@@ -45,7 +45,7 @@ public class Worker : BackgroundService
 
     private async Task Run(CancellationToken stoppingToken)
     {
-        _logger.LogInformation("更新检查开始运行：{Time}", DateTimeOffset.Now);
+        _logger.LogInformation("更新检查开始运行：{UpdateStartTime}", DateTimeOffset.Now);
         var tmpFolder = new DirectoryInfo(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()));
         tmpFolder.Create();
 
