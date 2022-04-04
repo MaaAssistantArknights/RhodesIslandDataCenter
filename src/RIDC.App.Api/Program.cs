@@ -8,7 +8,7 @@ using Serilog;
 
 #region Logger
 
-Log.Logger = SerilogProvider.GetLogger(RidcConfigurationProvider.GetProvider());
+Log.Logger = SerilogProvider.GetLogger(RidcConfigurationProvider.GetProvider(), "ridc-app-api");
 
 Log.Logger.Information("启动中...");
 
