@@ -66,7 +66,7 @@ public class S3Storage : IRidcStorage
             var stream = new MemoryStream();
             await _s3.GetObjectAsync(new GetObjectArgs()
                 .WithBucket(_bucketName)
-                .WithObject("version")
+                .WithObject("version.txt")
                 .WithCallbackStream(s => s.CopyTo(stream)));
             var sr = new StreamReader(stream);
             var versionText = await sr.ReadToEndAsync();
