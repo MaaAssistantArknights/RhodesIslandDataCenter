@@ -5,7 +5,8 @@ namespace RIDC.Schema.Json.Mapper;
 
 public static class JsonSchemaMapper
 {
-    public static Character ToCharacter(this JsonCharacter jsonCharacter, string characterId, IEnumerable<Power> nations, IEnumerable<Skill> skills)
+    public static Character ToCharacter(this JsonCharacter jsonCharacter, string characterId,
+        IEnumerable<Power> nations, IEnumerable<Skill> skills, IEnumerable<Skin> skins)
     {
         var character = jsonCharacter as Character;
         character.CharacterId = characterId;
@@ -14,6 +15,7 @@ public static class JsonSchemaMapper
             jsonCharacter.Skills.Any(y =>
                 x.SkillId == y.GetProperty("skillId").GetString()))
             .ToList();
+        character.Skins = skins.Where(x => x.CharacterId == characterId).ToList();
         return character;
     }
 
@@ -78,5 +80,23 @@ public static class JsonSchemaMapper
     {
         var enemy = jsonEnemy as Enemy;
         return enemy;
+    }
+
+    public static Skin ToSkin(this JsonSkin jsonSkin)
+    {
+        var skin = jsonSkin as Skin;
+        skin.SkinName = jsonSkin.DisplaySkin.SkinName;
+        skin.ModelName = jsonSkin.DisplaySkin.ModelName;
+        skin.DrawerName = jsonSkin.DisplaySkin.DrawerName;
+        skin.SkinGroupId = jsonSkin.DisplaySkin.SkinGroupId;
+        skin.SkinGroupName = jsonSkin.DisplaySkin.SkinGroupName;
+        skin.SkinGroupSortIndex = jsonSkin.DisplaySkin.SkinGroupSortIndex;
+        skin.Content = jsonSkin.DisplaySkin.Content;
+        skin.Dialog = jsonSkin.DisplaySkin.Dialog;
+        skin.Usage = jsonSkin.DisplaySkin.Usage;
+        skin.Description = jsonSkin.DisplaySkin.Description;
+        skin.ObtainApproach = jsonSkin.DisplaySkin.ObtainApproach;
+        skin.SortId = jsonSkin.DisplaySkin.SortId;
+        return skin;
     }
 }

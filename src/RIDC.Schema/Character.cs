@@ -27,4 +27,5 @@ public record Character
     [JsonPropertyName("profession")] public string Profession { get; set; }
     [JsonPropertyName("subProfessionId")] public string SubProfessionId { get; set; }
     [JsonPropertyName("skills")] public ICollection<Skill> Skills { get; set; }
+    [JsonPropertyName("skins")] public ICollection<Skin> Skins { get; set; }
 }
