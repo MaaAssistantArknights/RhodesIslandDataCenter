@@ -7,27 +7,26 @@ public interface IRidcStorage
     /// </summary>
     /// <param name="remoteDirectoryPath"></param>
     /// <returns></returns>
-    Task<List<BlobFileInfo>> GetFilesAsync(string remoteDirectoryPath);
+    Task<List<BlobFileInfo>> GetBlobsAsync(string remoteDirectoryPath);
 
     /// <summary>
     /// 上传本地文件至远程路径
     /// </summary>
-    /// <param name="remoteFilePath"></param>
-    /// <param name="localFileStream"></param>
+    /// <param name="fileList"></param>
     /// <returns></returns>
-    Task<bool> UploadFileAsync(string remoteFilePath, Stream localFileStream);
+    Task<bool> UploadBlobsAsync(IDictionary<string, Stream> fileList);
 
     /// <summary>
-    /// 删除一个远程文件
+    /// 删除远程文件
     /// </summary>
     /// <param name="remoteFilePath"></param>
     /// <returns></returns>
-    Task<bool> DeleteFileAsync(string remoteFilePath);
+    Task<bool> DeleteBlobsAsync(string[] remoteFilePath);
 
     /// <summary>
     /// 获取一个远程文件的哈希值
     /// </summary>
     /// <param name="remoteFilePath"></param>
     /// <returns></returns>
-    Task<string> GetFileHashAsync(string remoteFilePath);
+    Task<string> GetBlobHashAsync(string remoteFilePath);
 }

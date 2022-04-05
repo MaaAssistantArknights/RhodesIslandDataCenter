@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Options;
 using Minio;
 using Minio.DataModel.Tags;
+using RIDC.Provider.Configuration.Options;
 using RIDC.Provider.Configuration.Options.Storage;
 using RIDC.Storage.Base;
 
@@ -17,7 +18,7 @@ public class S3Storage : IRidcStorage
     private const string Policy =
         "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"PublicRead\",\"Effect\":\"Allow\",\"Principal\":\"*\",\"Action\":[\"s3:GetObject\",\"s3:GetObjectVersion\"],\"Resource\":[\"arn:aws:s3:::{BUCKET_NAME}/*\"]}]}";
 
-    public S3Storage(IOptions<S3StorageOption> s3Option, ILogger<S3Storage> logger)
+    public S3Storage(IOptions<S3StorageOption> s3Option, IOptions<StorageOption> storageOption, ILogger<S3Storage> logger)
     {
         _logger = logger;
         _bucketName = s3Option.Value.Bucket;
@@ -37,12 +38,20 @@ public class S3Storage : IRidcStorage
             return;
         }
 
-        var policy = Policy.Replace("{BUCKET_NAME}", _bucketName);
         _s3.MakeBucketAsync(new MakeBucketArgs().WithBucket(_bucketName)).Wait();
-        _s3.SetPolicyAsync(new SetPolicyArgs().WithBucket(_bucketName).WithPolicy(policy)).Wait();
+
+        if (storageOption.Value.Invariant is "Minio" or "Amazon S3")
+        {
+            var policy = Policy.Replace("{BUCKET_NAME}", _bucketName);
+            _s3.SetPolicyAsync(new SetPolicyArgs().WithBucket(_bucketName).WithPolicy(policy)).Wait();
+        }
+        else
+        {
+            _logger.LogWarning("使用非 Minio 或 Amazon S3 存储服务，请自行设置存储桶权限");
+        }
     }
 
-    public async Task<List<BlobFileInfo>> GetFilesAsync(string remoteDirectoryPath)
+    public async Task<List<BlobFileInfo>> GetBlobsAsync(string remoteDirectoryPath)
     {
         try
         {
@@ -59,12 +68,12 @@ public class S3Storage : IRidcStorage
                             .WithBucket(_bucketName)
                             .WithObject(item.Key)).Result;
                     detailItem.GetTags().TryGetValue("MD5", out var md5);
-                    items.Add(new BlobFileInfo(remoteDirectoryPath, item.Key, md5));
+                    items.Add(new BlobFileInfo(item.Key, md5));
                 },
                 ex => throw ex,
                 () =>
                 {
-                    _logger.LogInformation("已获取 Minio 路径 {StorageRemoteDir} 中的 {StorageGetFiles} 个文件信息",
+                    _logger.LogInformation("已获取 S3 路径 {StorageRemoteDir} 中的 {StorageGetFiles} 个文件信息",
                         remoteDirectoryPath, items.Count);
                     finished = true;
                 });
@@ -84,33 +93,40 @@ public class S3Storage : IRidcStorage
         }
     }
 
-    public async Task<bool> UploadFileAsync(string remoteFilePath, Stream localFileStream)
+    public async Task<bool> UploadBlobsAsync(IDictionary<string, Stream> fileList)
     {
         try
         {
-            var md5 = await localFileStream.GetMd5();
-            await _s3.PutObjectAsync(new PutObjectArgs()
-                .WithBucket(_bucketName)
-                .WithObject("hello/world/data.json")
-                .WithStreamData(localFileStream)
-                .WithObjectSize(localFileStream.Length)
-                .WithTagging(new Tagging(new Dictionary<string, string> { { "MD5", md5 } }, false)));
+            foreach (var (path, stream) in fileList)
+            {
+                var md5 = await stream.GetMd5();
+                await _s3.PutObjectAsync(new PutObjectArgs()
+                    .WithBucket(_bucketName)
+                    .WithObject(path)
+                    .WithStreamData(stream)
+                    .WithObjectSize(stream.Length)
+                    .WithTagging(new Tagging(new Dictionary<string, string> { { "MD5", md5 } }, false)));
+            }
+
             return true;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "删除 S3 Blob 出错，{StorageErrorType}", StorageErrorType.FailedToUploadObject.ToString());
+            _logger.LogError(ex, "上传 S3 Blob 出错，{StorageErrorType}", StorageErrorType.FailedToUploadObject.ToString());
             return false;
         }
     }
 
-    public async Task<bool> DeleteFileAsync(string remoteFilePath)
+    public async Task<bool> DeleteBlobsAsync(string[] remoteFilePath)
     {
         try
         {
-            await _s3.RemoveObjectAsync(new RemoveObjectArgs()
-                .WithBucket(_bucketName)
-                .WithObject(remoteFilePath));
+            foreach (var remoteFile in remoteFilePath)
+            {
+                await _s3.RemoveObjectAsync(new RemoveObjectArgs()
+                    .WithBucket(_bucketName)
+                    .WithObject(remoteFile));
+            }
             return true;
         }
         catch (Exception ex)
@@ -120,7 +136,7 @@ public class S3Storage : IRidcStorage
         }
     }
 
-    public async Task<string> GetFileHashAsync(string remoteFilePath)
+    public async Task<string> GetBlobHashAsync(string remoteFilePath)
     {
         try
         {
