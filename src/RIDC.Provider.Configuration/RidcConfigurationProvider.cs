@@ -68,7 +68,7 @@ public class RidcConfigurationProvider
 
     public T GetOption<T>() where T : new()
     {
-        var name = typeof(T).Name.Replace("Option", string.Empty);
+        var name = typeof(T).Name.FormatOptionSection();
         var obj = new T();
         _configuration.GetSection(name)
             .Bind(obj);

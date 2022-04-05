@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>disable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\RIDC.Provider.Configuration\RIDC.Provider.Configuration.csproj" />
+      <ProjectReference Include="..\RIDC.Provider.Logger\RIDC.Provider.Logger.csproj" />
+      <ProjectReference Include="..\RIDC.Shared\RIDC.Shared.csproj" />
+    </ItemGroup>
+
+</Project>
