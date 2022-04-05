@@ -14,6 +14,7 @@ public class RhodesIslandDbContext : DbContext
     public DbSet<Stage> Stages { get; set; }
     public DbSet<Tip> Tips { get; set; }
     public DbSet<Zone> Zones { get; set; }
+    public DbSet<Enemy> Enemies { get; set; }
     public DbSet<Miscellaneous> Miscellaneous { get; set; }
 
     public RhodesIslandDbContext(DbContextOptions<RhodesIslandDbContext> options) : base(options) { }
@@ -24,6 +25,9 @@ public class RhodesIslandDbContext : DbContext
 
         Func<ICollection<string>, string> stringCollectionToStringConvertor = string(s) => string.Join("$$", s);
         Func<string, ICollection<string>> stringToStringCollectionConvertor = ICollection<string>(s) => s.Split("$$");
+        var stringICollectionValueComparer = new ValueComparer<ICollection<string>>(
+            (s1, s2) => s1.SequenceEqual(s2),
+            s => s.GetHashCode());
 
         modelBuilder.Entity<Character>(p =>
         {
@@ -36,9 +40,7 @@ public class RhodesIslandDbContext : DbContext
                 .HasConversion(
                     s => stringCollectionToStringConvertor.Invoke(s),
                     s => stringToStringCollectionConvertor.Invoke(s),
-                    new ValueComparer<ICollection<string>>(
-                        (s1, s2) => s1.SequenceEqual(s2),
-                        s => s.GetHashCode()));
+                    stringICollectionValueComparer);
         });
 
         #endregion
@@ -103,6 +105,20 @@ public class RhodesIslandDbContext : DbContext
         {
             p.HasKey(x => x.ZoneId);
             p.HasMany(x => x.Stages);
+        });
+
+        #endregion
+
+        #region Enemy
+
+        modelBuilder.Entity<Enemy>(p =>
+        {
+            p.HasKey(x => x.EnemyId);
+            p.Property(x => x.EnemyTags)
+                .HasConversion(
+                    s => stringCollectionToStringConvertor.Invoke(s),
+                    s => stringToStringCollectionConvertor.Invoke(s),
+                    stringICollectionValueComparer);
         });
 
         #endregion

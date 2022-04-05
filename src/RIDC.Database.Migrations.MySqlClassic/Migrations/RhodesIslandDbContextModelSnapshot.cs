@@ -157,6 +157,61 @@ namespace RIDC.Database.Migrations.MySqlClassic.Migrations
                     b.ToTable("Charms");
                 });
 
+            modelBuilder.Entity("RIDC.Schema.Enemy", b =>
+                {
+                    b.Property<string>("EnemyId")
+                        .HasColumnType("varchar(95)");
+
+                    b.Property<string>("Ability")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Attack")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("AttackType")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Defence")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Endure")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("EnemyIndex")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("EnemyLevel")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("EnemyRace")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("EnemyTags")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("HideInHandbook")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("IsInvalidKilled")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Resistance")
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("SortId")
+                        .HasColumnType("int");
+
+                    b.HasKey("EnemyId");
+
+                    b.ToTable("Enemies");
+                });
+
             modelBuilder.Entity("RIDC.Schema.Item", b =>
                 {
                     b.Property<string>("ItemId")

@@ -73,4 +73,10 @@ public static class JsonSchemaMapper
         zone.Stages = stages.Where(x => x.ZoneId == zone.ZoneId).ToList();
         return zone;
     }
+
+    public static Enemy ToEnemy(this JsonEnemy jsonEnemy)
+    {
+        var enemy = jsonEnemy as Enemy;
+        return enemy;
+    }
 }

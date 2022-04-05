@@ -160,6 +160,61 @@ namespace RIDC.Database.Migrations.PgSql.Migrations
                     b.ToTable("Charms");
                 });
 
+            modelBuilder.Entity("RIDC.Schema.Enemy", b =>
+                {
+                    b.Property<string>("EnemyId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Ability")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Attack")
+                        .HasColumnType("text");
+
+                    b.Property<string>("AttackType")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Defence")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Endure")
+                        .HasColumnType("text");
+
+                    b.Property<string>("EnemyIndex")
+                        .HasColumnType("text");
+
+                    b.Property<string>("EnemyLevel")
+                        .HasColumnType("text");
+
+                    b.Property<string>("EnemyRace")
+                        .HasColumnType("text");
+
+                    b.Property<string>("EnemyTags")
+                        .HasColumnType("text");
+
+                    b.Property<string>("HideInHandbook")
+                        .HasColumnType("text");
+
+                    b.Property<string>("IsInvalidKilled")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Resistance")
+                        .HasColumnType("text");
+
+                    b.Property<int>("SortId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("EnemyId");
+
+                    b.ToTable("Enemies");
+                });
+
             modelBuilder.Entity("RIDC.Schema.Item", b =>
                 {
                     b.Property<string>("ItemId")
