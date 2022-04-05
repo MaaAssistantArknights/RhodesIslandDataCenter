@@ -19,7 +19,7 @@ public static class RidcConfigurationExtension
         serviceProvider.AddOptions<UpdaterOption>().BindConfiguration(nameof(UpdaterOption).FormatOptionSection());
         serviceProvider.AddOptions<ApiOption>().BindConfiguration(nameof(ApiOption).FormatOptionSection());
         serviceProvider.AddOptions<ElasticLoggerOption>().BindConfiguration(nameof(ElasticLoggerOption).FormatOptionSection());
-        serviceProvider.AddOptions<StorageOption>().BindConfiguration(nameof(ElasticLoggerOption).FormatOptionSection());
+        serviceProvider.AddOptions<StorageOption>().BindConfiguration(nameof(StorageOption).FormatOptionSection());
 
         serviceProvider.AddOptions<S3StorageOption>().BindConfiguration(nameof(S3StorageOption).FormatOptionSection());
 
