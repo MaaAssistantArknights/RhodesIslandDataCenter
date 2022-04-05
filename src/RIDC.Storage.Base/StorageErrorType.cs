@@ -5,5 +5,6 @@ public enum StorageErrorType
     FailedToListObjects,
     FailedToUploadObject,
     FailedToDeleteObject,
-    FailedToGetObjectTags
+    FailedToGetVersionObject,
+    RemoteDirectoryNotFound
 }

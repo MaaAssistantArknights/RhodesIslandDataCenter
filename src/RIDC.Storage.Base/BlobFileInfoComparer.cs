@@ -22,7 +22,7 @@ public static class BlobFileInfoComparer
         // 对于每一个远程文件，与本地不一致的，认为远程文件需要被删除，新增本地文件
         foreach (var remoteFile in remote)
         {
-            var localFile = local.FirstOrDefault(x => x.Name == remoteFile.Name);
+            var localFile = local.FirstOrDefault(x => x.Key == remoteFile.Key);
             if (localFile == null)
             {
                 deleted.Add(remoteFile);
@@ -42,7 +42,7 @@ public static class BlobFileInfoComparer
         // 对于每一本地文件，远程不存在的则认为需要添加
         foreach (var localFile in local)
         {
-            var remoteFile = remote.FirstOrDefault(x => x.Name == localFile.Name);
+            var remoteFile = remote.FirstOrDefault(x => x.Key == localFile.Key);
             if (remoteFile == null)
             {
                 added.Add(localFile);

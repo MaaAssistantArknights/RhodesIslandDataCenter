@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Options;
 using Minio;
 using Minio.DataModel.Tags;
+using Minio.Exceptions;
 using RIDC.Provider.Configuration.Options;
 using RIDC.Provider.Configuration.Options.Storage;
 using RIDC.Storage.Base;
@@ -22,9 +23,16 @@ public class S3Storage : IRidcStorage
     {
         _logger = logger;
         _bucketName = s3Option.Value.Bucket;
-        var s3ClientBuilder = new MinioClient()
-            .WithEndpoint(s3Option.Value.Endpoint)
-            .WithCredentials(s3Option.Value.AccessKey, s3Option.Value.SecretKey);
+        var s3ClientBuilder = new MinioClient();
+        if (s3Option.Value.Port <= 0)
+        {
+            s3ClientBuilder.WithEndpoint(s3Option.Value.Endpoint);
+        }
+        else
+        {
+            s3ClientBuilder.WithEndpoint(s3Option.Value.Endpoint, s3Option.Value.Port);
+        }
+        s3ClientBuilder.WithCredentials(s3Option.Value.AccessKey, s3Option.Value.SecretKey);
         if (s3Option.Value.UseSsl)
         {
             s3ClientBuilder.WithSSL();
@@ -51,8 +59,49 @@ public class S3Storage : IRidcStorage
         }
     }
 
+    public async Task<string> GetBlobVersionAsync()
+    {
+        try
+        {
+            var stream = new MemoryStream();
+            await _s3.GetObjectAsync(new GetObjectArgs()
+                .WithBucket(_bucketName)
+                .WithObject("version")
+                .WithCallbackStream(s => s.CopyTo(stream)));
+            var sr = new StreamReader(stream);
+            var versionText = await sr.ReadToEndAsync();
+            return versionText;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "获取 S3 版本文件时出现错误，{StorageErrorType}", StorageErrorType.FailedToGetVersionObject.ToString());
+            return null;
+        }
+    }
+
     public async Task<List<BlobFileInfo>> GetBlobsAsync(string remoteDirectoryPath)
     {
+        try
+        {
+            // 用于检查是否存在指定目录，Observable 中若不存在则会抛出异常，并且直接 Dispose，捕获不了异常
+            await _s3.GetObjectTagsAsync(new GetObjectTagsArgs()
+                .WithBucket(_bucketName)
+                .WithObject(remoteDirectoryPath));
+        }
+        catch (Exception ex)
+        {
+            if (ex.Message.Contains("The specified key does not exist."))
+            {
+                _logger.LogWarning("列出 S3 Blobs 时出现错误，{StorageRemoteDir} 不存在，{StorageErrorType}",
+                    remoteDirectoryPath, StorageErrorType.RemoteDirectoryNotFound.ToString());
+                return null;
+            }
+
+            _logger.LogError(ex, "列出 S3 Blobs 时出现错误，{StorageErrorType}",
+                StorageErrorType.FailedToListObjects.ToString());
+            return null;
+        }
+
         try
         {
             var items = new List<BlobFileInfo>();
@@ -70,7 +119,11 @@ public class S3Storage : IRidcStorage
                     detailItem.GetTags().TryGetValue("MD5", out var md5);
                     items.Add(new BlobFileInfo(item.Key, md5));
                 },
-                ex => throw ex,
+                ex =>
+                {
+                    _logger.LogError(ex, "列出 S3 Blobs 时出现错误，{StorageErrorType}",
+                        StorageErrorType.FailedToListObjects.ToString());
+                },
                 () =>
                 {
                     _logger.LogInformation("已获取 S3 路径 {StorageRemoteDir} 中的 {StorageGetFiles} 个文件信息",
@@ -93,19 +146,22 @@ public class S3Storage : IRidcStorage
         }
     }
 
-    public async Task<bool> UploadBlobsAsync(IDictionary<string, Stream> fileList)
+    public async Task<bool> UploadBlobsAsync(IEnumerable<LocalBlobFileInfo> localBlobFileInfos)
     {
         try
         {
-            foreach (var (path, stream) in fileList)
+            foreach (var (key, hash, localPath) in localBlobFileInfos)
             {
-                var md5 = await stream.GetMd5();
+                var mimeType = MimeMapping.MimeUtility.GetMimeMapping(key);
+                var stream = File.OpenRead(localPath);
                 await _s3.PutObjectAsync(new PutObjectArgs()
                     .WithBucket(_bucketName)
-                    .WithObject(path)
+                    .WithObject(key)
                     .WithStreamData(stream)
                     .WithObjectSize(stream.Length)
-                    .WithTagging(new Tagging(new Dictionary<string, string> { { "MD5", md5 } }, false)));
+                    .WithContentType(mimeType)
+                    .WithTagging(new Tagging(new Dictionary<string, string> { { "MD5", hash } }, false)));
+                stream.Close();
             }
 
             return true;
@@ -117,7 +173,7 @@ public class S3Storage : IRidcStorage
         }
     }
 
-    public async Task<bool> DeleteBlobsAsync(string[] remoteFilePath)
+    public async Task<bool> DeleteBlobsAsync(IEnumerable<string> remoteFilePath)
     {
         try
         {
@@ -133,23 +189,6 @@ public class S3Storage : IRidcStorage
         {
             _logger.LogError(ex, "删除 S3 Blob 出错，{StorageErrorType}", StorageErrorType.FailedToDeleteObject.ToString());
             return false;
-        }
-    }
-
-    public async Task<string> GetBlobHashAsync(string remoteFilePath)
-    {
-        try
-        {
-            var tags = await _s3.GetObjectTagsAsync(new GetObjectTagsArgs()
-                .WithBucket(_bucketName)
-                .WithObject(remoteFilePath));
-            tags.GetTags().TryGetValue("MD5", out var md5);
-            return md5;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "获取 S3 Blob Tags 出错，{StorageErrorType}", StorageErrorType.FailedToGetObjectTags.ToString());
-            return null;
         }
     }
 }

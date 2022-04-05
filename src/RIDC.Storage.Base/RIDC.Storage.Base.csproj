@@ -11,5 +11,9 @@
       <ProjectReference Include="..\RIDC.Provider.Logger\RIDC.Provider.Logger.csproj" />
       <ProjectReference Include="..\RIDC.Shared\RIDC.Shared.csproj" />
     </ItemGroup>
+  
+    <ItemGroup>
+      <PackageReference Include="MimeMapping" Version="1.0.1.37"/>
+    </ItemGroup>
 
 </Project>

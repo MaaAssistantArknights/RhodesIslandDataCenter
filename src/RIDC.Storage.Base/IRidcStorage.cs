@@ -2,6 +2,13 @@
 
 public interface IRidcStorage
 {
+
+    /// <summary>
+    /// 获取存储服务器 Blob 版本
+    /// </summary>
+    /// <returns></returns>
+    Task<string> GetBlobVersionAsync();
+
     /// <summary>
     /// 获取远程路径下的所有文件信息
     /// </summary>
@@ -12,21 +19,14 @@ public interface IRidcStorage
     /// <summary>
     /// 上传本地文件至远程路径
     /// </summary>
-    /// <param name="fileList"></param>
+    /// <param name="localBlobFileInfos"></param>
     /// <returns></returns>
-    Task<bool> UploadBlobsAsync(IDictionary<string, Stream> fileList);
+    Task<bool> UploadBlobsAsync(IEnumerable<LocalBlobFileInfo> localBlobFileInfos);
 
     /// <summary>
     /// 删除远程文件
     /// </summary>
-    /// <param name="remoteFilePath"></param>
+    /// <param name="remoteFilePaths"></param>
     /// <returns></returns>
-    Task<bool> DeleteBlobsAsync(string[] remoteFilePath);
-
-    /// <summary>
-    /// 获取一个远程文件的哈希值
-    /// </summary>
-    /// <param name="remoteFilePath"></param>
-    /// <returns></returns>
-    Task<string> GetBlobHashAsync(string remoteFilePath);
+    Task<bool> DeleteBlobsAsync(IEnumerable<string> remoteFilePaths);
 }
