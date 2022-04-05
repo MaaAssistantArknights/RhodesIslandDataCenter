@@ -33,6 +33,32 @@ namespace RIDC.Database.Migrations.Sqlite.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Enemies",
+                columns: table => new
+                {
+                    EnemyId = table.Column<string>(type: "TEXT", nullable: false),
+                    EnemyIndex = table.Column<string>(type: "TEXT", nullable: true),
+                    EnemyTags = table.Column<string>(type: "TEXT", nullable: true),
+                    SortId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Name = table.Column<string>(type: "TEXT", nullable: true),
+                    EnemyRace = table.Column<string>(type: "TEXT", nullable: true),
+                    EnemyLevel = table.Column<string>(type: "TEXT", nullable: true),
+                    Description = table.Column<string>(type: "TEXT", nullable: true),
+                    AttackType = table.Column<string>(type: "TEXT", nullable: true),
+                    Endure = table.Column<string>(type: "TEXT", nullable: true),
+                    Attack = table.Column<string>(type: "TEXT", nullable: true),
+                    Defence = table.Column<string>(type: "TEXT", nullable: true),
+                    Resistance = table.Column<string>(type: "TEXT", nullable: true),
+                    Ability = table.Column<string>(type: "TEXT", nullable: true),
+                    IsInvalidKilled = table.Column<bool>(type: "INTEGER", nullable: false),
+                    HideInHandbook = table.Column<bool>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Enemies", x => x.EnemyId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Items",
                 columns: table => new
                 {
@@ -240,6 +266,40 @@ namespace RIDC.Database.Migrations.Sqlite.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Skins",
+                columns: table => new
+                {
+                    SkinId = table.Column<string>(type: "TEXT", nullable: false),
+                    CharacterId = table.Column<string>(type: "TEXT", nullable: true),
+                    AvatarId = table.Column<string>(type: "TEXT", nullable: true),
+                    PortraitId = table.Column<string>(type: "TEXT", nullable: true),
+                    DynamicPortraitId = table.Column<string>(type: "TEXT", nullable: true),
+                    IllustId = table.Column<string>(type: "TEXT", nullable: true),
+                    DynamicIllustId = table.Column<string>(type: "TEXT", nullable: true),
+                    SkinName = table.Column<string>(type: "TEXT", nullable: true),
+                    ModelName = table.Column<string>(type: "TEXT", nullable: true),
+                    DrawerName = table.Column<string>(type: "TEXT", nullable: true),
+                    SkinGroupId = table.Column<string>(type: "TEXT", nullable: true),
+                    SkinGroupName = table.Column<string>(type: "TEXT", nullable: true),
+                    SkinGroupSortIndex = table.Column<int>(type: "INTEGER", nullable: false),
+                    Content = table.Column<string>(type: "TEXT", nullable: true),
+                    Dialog = table.Column<string>(type: "TEXT", nullable: true),
+                    Usage = table.Column<string>(type: "TEXT", nullable: true),
+                    Description = table.Column<string>(type: "TEXT", nullable: true),
+                    ObtainApproach = table.Column<string>(type: "TEXT", nullable: true),
+                    SortId = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Skins", x => x.SkinId);
+                    table.ForeignKey(
+                        name: "FK_Skins_Characters_CharacterId",
+                        column: x => x.CharacterId,
+                        principalTable: "Characters",
+                        principalColumn: "CharacterId");
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Characters_NationPowerId",
                 table: "Characters",
@@ -249,6 +309,11 @@ namespace RIDC.Database.Migrations.Sqlite.Migrations
                 name: "IX_relation_CharacterSkill_SkillsSkillId",
                 table: "relation_CharacterSkill",
                 column: "SkillsSkillId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Skins_CharacterId",
+                table: "Skins",
+                column: "CharacterId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Stages_ZoneId",
@@ -262,6 +327,9 @@ namespace RIDC.Database.Migrations.Sqlite.Migrations
                 name: "Charms");
 
             migrationBuilder.DropTable(
+                name: "Enemies");
+
+            migrationBuilder.DropTable(
                 name: "Items");
 
             migrationBuilder.DropTable(
@@ -271,16 +339,19 @@ namespace RIDC.Database.Migrations.Sqlite.Migrations
                 name: "relation_CharacterSkill");
 
             migrationBuilder.DropTable(
+                name: "Skins");
+
+            migrationBuilder.DropTable(
                 name: "Stages");
 
             migrationBuilder.DropTable(
                 name: "Tips");
 
             migrationBuilder.DropTable(
-                name: "Characters");
+                name: "Skills");
 
             migrationBuilder.DropTable(
-                name: "Skills");
+                name: "Characters");
 
             migrationBuilder.DropTable(
                 name: "Zones");

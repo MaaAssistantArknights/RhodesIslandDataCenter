@@ -190,11 +190,11 @@ namespace RIDC.Database.Migrations.Sqlite.Migrations
                     b.Property<string>("EnemyTags")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("HideInHandbook")
-                        .HasColumnType("TEXT");
+                    b.Property<bool>("HideInHandbook")
+                        .HasColumnType("INTEGER");
 
-                    b.Property<string>("IsInvalidKilled")
-                        .HasColumnType("TEXT");
+                    b.Property<bool>("IsInvalidKilled")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
@@ -305,6 +305,72 @@ namespace RIDC.Database.Migrations.Sqlite.Migrations
                     b.HasKey("SkillId");
 
                     b.ToTable("Skills");
+                });
+
+            modelBuilder.Entity("RIDC.Schema.Skin", b =>
+                {
+                    b.Property<string>("SkinId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("AvatarId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CharacterId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Dialog")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("DrawerName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("DynamicIllustId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("DynamicPortraitId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("IllustId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ModelName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ObtainApproach")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PortraitId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SkinGroupId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SkinGroupName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("SkinGroupSortIndex")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("SkinName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("SortId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Usage")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("SkinId");
+
+                    b.HasIndex("CharacterId");
+
+                    b.ToTable("Skins");
                 });
 
             modelBuilder.Entity("RIDC.Schema.Stage", b =>
@@ -501,11 +567,23 @@ namespace RIDC.Database.Migrations.Sqlite.Migrations
                     b.Navigation("Nation");
                 });
 
+            modelBuilder.Entity("RIDC.Schema.Skin", b =>
+                {
+                    b.HasOne("RIDC.Schema.Character", null)
+                        .WithMany("Skins")
+                        .HasForeignKey("CharacterId");
+                });
+
             modelBuilder.Entity("RIDC.Schema.Stage", b =>
                 {
                     b.HasOne("RIDC.Schema.Zone", null)
                         .WithMany("Stages")
                         .HasForeignKey("ZoneId");
+                });
+
+            modelBuilder.Entity("RIDC.Schema.Character", b =>
+                {
+                    b.Navigation("Skins");
                 });
 
             modelBuilder.Entity("RIDC.Schema.Zone", b =>

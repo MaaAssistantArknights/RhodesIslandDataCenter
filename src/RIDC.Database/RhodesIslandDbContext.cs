@@ -15,6 +15,7 @@ public class RhodesIslandDbContext : DbContext
     public DbSet<Tip> Tips { get; set; }
     public DbSet<Zone> Zones { get; set; }
     public DbSet<Enemy> Enemies { get; set; }
+    public DbSet<Skin> Skins { get; set; }
     public DbSet<Miscellaneous> Miscellaneous { get; set; }
 
     public RhodesIslandDbContext(DbContextOptions<RhodesIslandDbContext> options) : base(options) { }
@@ -33,6 +34,7 @@ public class RhodesIslandDbContext : DbContext
         {
             p.HasKey(x => x.CharacterId);
             p.HasOne(x => x.Nation);
+            p.HasMany(x => x.Skins);
             p.HasMany(x => x.Skills)
                 .WithMany(x => x.Characters)
                 .UsingEntity(builder => builder.ToTable("relation_CharacterSkill"));
@@ -119,6 +121,15 @@ public class RhodesIslandDbContext : DbContext
                     s => stringCollectionToStringConvertor.Invoke(s),
                     s => stringToStringCollectionConvertor.Invoke(s),
                     stringICollectionValueComparer);
+        });
+
+        #endregion
+
+        #region Skin
+
+        modelBuilder.Entity<Skin>(p =>
+        {
+            p.HasKey(x => x.SkinId);
         });
 
         #endregion

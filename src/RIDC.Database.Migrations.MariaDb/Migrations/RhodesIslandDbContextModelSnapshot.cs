@@ -192,11 +192,11 @@ namespace RIDC.Database.Migrations.MariaDb.Migrations
                     b.Property<string>("EnemyTags")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("HideInHandbook")
-                        .HasColumnType("longtext");
+                    b.Property<bool>("HideInHandbook")
+                        .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("IsInvalidKilled")
-                        .HasColumnType("longtext");
+                    b.Property<bool>("IsInvalidKilled")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Name")
                         .HasColumnType("longtext");
@@ -307,6 +307,72 @@ namespace RIDC.Database.Migrations.MariaDb.Migrations
                     b.HasKey("SkillId");
 
                     b.ToTable("Skills");
+                });
+
+            modelBuilder.Entity("RIDC.Schema.Skin", b =>
+                {
+                    b.Property<string>("SkinId")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("AvatarId")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("CharacterId")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Dialog")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("DrawerName")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("DynamicIllustId")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("DynamicPortraitId")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("IllustId")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ModelName")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ObtainApproach")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("PortraitId")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("SkinGroupId")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("SkinGroupName")
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("SkinGroupSortIndex")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SkinName")
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("SortId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Usage")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("SkinId");
+
+                    b.HasIndex("CharacterId");
+
+                    b.ToTable("Skins");
                 });
 
             modelBuilder.Entity("RIDC.Schema.Stage", b =>
@@ -503,11 +569,23 @@ namespace RIDC.Database.Migrations.MariaDb.Migrations
                     b.Navigation("Nation");
                 });
 
+            modelBuilder.Entity("RIDC.Schema.Skin", b =>
+                {
+                    b.HasOne("RIDC.Schema.Character", null)
+                        .WithMany("Skins")
+                        .HasForeignKey("CharacterId");
+                });
+
             modelBuilder.Entity("RIDC.Schema.Stage", b =>
                 {
                     b.HasOne("RIDC.Schema.Zone", null)
                         .WithMany("Stages")
                         .HasForeignKey("ZoneId");
+                });
+
+            modelBuilder.Entity("RIDC.Schema.Character", b =>
+                {
+                    b.Navigation("Skins");
                 });
 
             modelBuilder.Entity("RIDC.Schema.Zone", b =>

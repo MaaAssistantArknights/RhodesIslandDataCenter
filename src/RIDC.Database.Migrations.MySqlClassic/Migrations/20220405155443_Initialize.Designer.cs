@@ -7,10 +7,10 @@ using RIDC.Database;
 
 #nullable disable
 
-namespace RIDC.Database.Migrations.MariaDb.Migrations
+namespace RIDC.Database.Migrations.MySqlClassic.Migrations
 {
     [DbContext(typeof(RhodesIslandDbContext))]
-    [Migration("20220403171752_Initialize")]
+    [Migration("20220405155443_Initialize")]
     partial class Initialize
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,10 +23,10 @@ namespace RIDC.Database.Migrations.MariaDb.Migrations
             modelBuilder.Entity("CharacterSkill", b =>
                 {
                     b.Property<string>("CharactersCharacterId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(95)");
 
                     b.Property<string>("SkillsSkillId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(95)");
 
                     b.HasKey("CharactersCharacterId", "SkillsSkillId");
 
@@ -38,7 +38,7 @@ namespace RIDC.Database.Migrations.MariaDb.Migrations
             modelBuilder.Entity("RIDC.Schema.Character", b =>
                 {
                     b.Property<string>("CharacterId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(95)");
 
                     b.Property<string>("Appellation")
                         .HasColumnType("longtext");
@@ -77,7 +77,7 @@ namespace RIDC.Database.Migrations.MariaDb.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("NationPowerId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(95)");
 
                     b.Property<string>("Position")
                         .HasColumnType("longtext");
@@ -113,7 +113,7 @@ namespace RIDC.Database.Migrations.MariaDb.Migrations
             modelBuilder.Entity("RIDC.Schema.Charm", b =>
                 {
                     b.Property<string>("CharmId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(95)");
 
                     b.Property<string>("CharmEffect")
                         .HasColumnType("longtext");
@@ -159,10 +159,65 @@ namespace RIDC.Database.Migrations.MariaDb.Migrations
                     b.ToTable("Charms");
                 });
 
+            modelBuilder.Entity("RIDC.Schema.Enemy", b =>
+                {
+                    b.Property<string>("EnemyId")
+                        .HasColumnType("varchar(95)");
+
+                    b.Property<string>("Ability")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Attack")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("AttackType")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Defence")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Endure")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("EnemyIndex")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("EnemyLevel")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("EnemyRace")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("EnemyTags")
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("HideInHandbook")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("IsInvalidKilled")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Resistance")
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("SortId")
+                        .HasColumnType("int");
+
+                    b.HasKey("EnemyId");
+
+                    b.ToTable("Enemies");
+                });
+
             modelBuilder.Entity("RIDC.Schema.Item", b =>
                 {
                     b.Property<string>("ItemId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(95)");
 
                     b.Property<string>("ClassifyType")
                         .HasColumnType("longtext");
@@ -202,7 +257,7 @@ namespace RIDC.Database.Migrations.MariaDb.Migrations
             modelBuilder.Entity("RIDC.Schema.Miscellaneous", b =>
                 {
                     b.Property<string>("Key")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(95)");
 
                     b.Property<string>("Value")
                         .HasColumnType("longtext");
@@ -215,7 +270,7 @@ namespace RIDC.Database.Migrations.MariaDb.Migrations
             modelBuilder.Entity("RIDC.Schema.Power", b =>
                 {
                     b.Property<string>("PowerId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(95)");
 
                     b.Property<string>("Color")
                         .HasColumnType("longtext");
@@ -246,7 +301,7 @@ namespace RIDC.Database.Migrations.MariaDb.Migrations
             modelBuilder.Entity("RIDC.Schema.Skill", b =>
                 {
                     b.Property<string>("SkillId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(95)");
 
                     b.Property<string>("Name")
                         .HasColumnType("longtext");
@@ -256,10 +311,76 @@ namespace RIDC.Database.Migrations.MariaDb.Migrations
                     b.ToTable("Skills");
                 });
 
+            modelBuilder.Entity("RIDC.Schema.Skin", b =>
+                {
+                    b.Property<string>("SkinId")
+                        .HasColumnType("varchar(95)");
+
+                    b.Property<string>("AvatarId")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("CharacterId")
+                        .HasColumnType("varchar(95)");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Dialog")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("DrawerName")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("DynamicIllustId")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("DynamicPortraitId")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("IllustId")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ModelName")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ObtainApproach")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("PortraitId")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("SkinGroupId")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("SkinGroupName")
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("SkinGroupSortIndex")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SkinName")
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("SortId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Usage")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("SkinId");
+
+                    b.HasIndex("CharacterId");
+
+                    b.ToTable("Skins");
+                });
+
             modelBuilder.Entity("RIDC.Schema.Stage", b =>
                 {
                     b.Property<string>("StageId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(95)");
 
                     b.Property<int>("ApCost")
                         .HasColumnType("int");
@@ -358,7 +479,7 @@ namespace RIDC.Database.Migrations.MariaDb.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ZoneId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(95)");
 
                     b.HasKey("StageId");
 
@@ -370,7 +491,7 @@ namespace RIDC.Database.Migrations.MariaDb.Migrations
             modelBuilder.Entity("RIDC.Schema.Tip", b =>
                 {
                     b.Property<string>("TipId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(95)");
 
                     b.Property<string>("Category")
                         .HasColumnType("longtext");
@@ -389,7 +510,7 @@ namespace RIDC.Database.Migrations.MariaDb.Migrations
             modelBuilder.Entity("RIDC.Schema.Zone", b =>
                 {
                     b.Property<string>("ZoneId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(95)");
 
                     b.Property<bool>("CanPreview")
                         .HasColumnType("tinyint(1)");
@@ -450,11 +571,23 @@ namespace RIDC.Database.Migrations.MariaDb.Migrations
                     b.Navigation("Nation");
                 });
 
+            modelBuilder.Entity("RIDC.Schema.Skin", b =>
+                {
+                    b.HasOne("RIDC.Schema.Character", null)
+                        .WithMany("Skins")
+                        .HasForeignKey("CharacterId");
+                });
+
             modelBuilder.Entity("RIDC.Schema.Stage", b =>
                 {
                     b.HasOne("RIDC.Schema.Zone", null)
                         .WithMany("Stages")
                         .HasForeignKey("ZoneId");
+                });
+
+            modelBuilder.Entity("RIDC.Schema.Character", b =>
+                {
+                    b.Navigation("Skins");
                 });
 
             modelBuilder.Entity("RIDC.Schema.Zone", b =>
