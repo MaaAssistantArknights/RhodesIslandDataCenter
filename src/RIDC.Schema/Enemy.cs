@@ -18,6 +18,6 @@ public record Enemy
     [JsonPropertyName("defence")] public string Defence { get; set; }
     [JsonPropertyName("resistance")] public string Resistance { get; set; }
     [JsonPropertyName("ability")] public string Ability { get; set; }
-    [JsonPropertyName("isInvalidKilled")] public string IsInvalidKilled { get; set; }
-    [JsonPropertyName("hideInHandbook")] public string HideInHandbook { get; set; }
+    [JsonPropertyName("isInvalidKilled")] public bool IsInvalidKilled { get; set; }
+    [JsonPropertyName("hideInHandbook")] public bool HideInHandbook { get; set; }
 }
