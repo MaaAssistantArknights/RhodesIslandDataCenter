@@ -12,7 +12,10 @@ public class Query
     [UseFiltering]
     [UseSorting]
     public IQueryable<Character> GetCharacter([ScopedService] RhodesIslandDbContext db)
-        => db.Characters.Include(x => x.Nation).Include(x => x.Skills);
+        => db.Characters
+            .Include(x => x.Nation)
+            .Include(x => x.Skills)
+            .Include(x => x.Skins);
 
     [UseApplicationDbContext]
     [UsePaging(DefaultPageSize = 10, MaxPageSize = 100)]
@@ -20,6 +23,13 @@ public class Query
     [UseSorting]
     public IQueryable<Charm> GetCharm([ScopedService] RhodesIslandDbContext db)
         => db.Charms;
+
+    [UseApplicationDbContext]
+    [UsePaging(DefaultPageSize = 10, MaxPageSize = 100)]
+    [UseFiltering]
+    [UseSorting]
+    public IQueryable<Enemy> GetEnemy([ScopedService] RhodesIslandDbContext db)
+        => db.Enemies;
 
     [UseApplicationDbContext]
     [UsePaging(DefaultPageSize = 10, MaxPageSize = 100)]
@@ -41,6 +51,13 @@ public class Query
     [UseSorting]
     public IQueryable<Skill> GetSkill([ScopedService] RhodesIslandDbContext db)
         => db.Skills;
+
+    [UseApplicationDbContext]
+    [UsePaging(DefaultPageSize = 10, MaxPageSize = 100)]
+    [UseFiltering]
+    [UseSorting]
+    public IQueryable<Skin> GetSkins([ScopedService] RhodesIslandDbContext db)
+        => db.Skins;
 
     [UseApplicationDbContext]
     [UsePaging(DefaultPageSize = 10, MaxPageSize = 100)]
