@@ -1,8 +1,8 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Text;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Minio;
 using Minio.DataModel.Tags;
-using Minio.Exceptions;
 using RIDC.Provider.Configuration.Options;
 using RIDC.Provider.Configuration.Options.Storage;
 using RIDC.Storage.Base;
@@ -68,8 +68,8 @@ public class S3Storage : IRidcStorage
                 .WithBucket(_bucketName)
                 .WithObject("version.txt")
                 .WithCallbackStream(s => s.CopyTo(stream)));
-            var sr = new StreamReader(stream);
-            var versionText = await sr.ReadToEndAsync();
+            var buff = stream.ToArray();
+            var versionText = Encoding.UTF8.GetString(buff, 0, buff.Length);
             return versionText;
         }
         catch (Exception ex)
@@ -153,15 +153,12 @@ public class S3Storage : IRidcStorage
             foreach (var (key, hash, localPath) in localBlobFileInfos)
             {
                 var mimeType = MimeMapping.MimeUtility.GetMimeMapping(key);
-                var stream = File.OpenRead(localPath);
                 await _s3.PutObjectAsync(new PutObjectArgs()
                     .WithBucket(_bucketName)
                     .WithObject(key)
-                    .WithStreamData(stream)
-                    .WithObjectSize(stream.Length)
+                    .WithFileName(localPath)
                     .WithContentType(mimeType)
                     .WithTagging(new Tagging(new Dictionary<string, string> { { "MD5", hash } }, false)));
-                stream.Close();
             }
 
             return true;

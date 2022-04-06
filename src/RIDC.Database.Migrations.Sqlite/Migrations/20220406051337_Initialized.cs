@@ -4,7 +4,7 @@
 
 namespace RIDC.Database.Migrations.Sqlite.Migrations
 {
-    public partial class Initialize : Migration
+    public partial class Initialized : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

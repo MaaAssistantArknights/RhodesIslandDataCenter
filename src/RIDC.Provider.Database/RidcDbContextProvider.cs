@@ -10,7 +10,7 @@ namespace RIDC.Provider.Database;
 
 public static class RidcDbContextProvider
 {
-    public static void UpdateDatabase(this RhodesIslandDbContext db, ILogger logger = null)
+    public static async Task UpdateDatabase(this RhodesIslandDbContext db, ILogger logger = null)
     {
         // ReSharper disable once ConvertToLocalFunction
         var log = (string message) =>
@@ -33,7 +33,13 @@ public static class RidcDbContextProvider
         }
 
         log($"应用数据库迁移：{string.Join("，", pendingMigrations)}");
-        db.Database.Migrate();
+        await db.Database.MigrateAsync();
+    }
+
+    public static bool IsRequireUpdate(this RhodesIslandDbContext db)
+    {
+        var pendingMigrations = db.Database.GetPendingMigrations().ToArray();
+        return pendingMigrations.Any();
     }
 
     public static IServiceCollection AddRidcDbContext(this IServiceCollection serviceCollection, RidcConfigurationProvider configurationProvider)

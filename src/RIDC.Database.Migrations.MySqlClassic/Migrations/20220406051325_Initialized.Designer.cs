@@ -7,11 +7,11 @@ using RIDC.Database;
 
 #nullable disable
 
-namespace RIDC.Database.Migrations.MariaDb.Migrations
+namespace RIDC.Database.Migrations.MySqlClassic.Migrations
 {
     [DbContext(typeof(RhodesIslandDbContext))]
-    [Migration("20220405155431_Initialize")]
-    partial class Initialize
+    [Migration("20220406051325_Initialized")]
+    partial class Initialized
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,10 +23,10 @@ namespace RIDC.Database.Migrations.MariaDb.Migrations
             modelBuilder.Entity("CharacterSkill", b =>
                 {
                     b.Property<string>("CharactersCharacterId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(95)");
 
                     b.Property<string>("SkillsSkillId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(95)");
 
                     b.HasKey("CharactersCharacterId", "SkillsSkillId");
 
@@ -38,7 +38,7 @@ namespace RIDC.Database.Migrations.MariaDb.Migrations
             modelBuilder.Entity("RIDC.Schema.Character", b =>
                 {
                     b.Property<string>("CharacterId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(95)");
 
                     b.Property<string>("Appellation")
                         .HasColumnType("longtext");
@@ -77,7 +77,7 @@ namespace RIDC.Database.Migrations.MariaDb.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("NationPowerId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(95)");
 
                     b.Property<string>("Position")
                         .HasColumnType("longtext");
@@ -113,7 +113,7 @@ namespace RIDC.Database.Migrations.MariaDb.Migrations
             modelBuilder.Entity("RIDC.Schema.Charm", b =>
                 {
                     b.Property<string>("CharmId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(95)");
 
                     b.Property<string>("CharmEffect")
                         .HasColumnType("longtext");
@@ -162,7 +162,7 @@ namespace RIDC.Database.Migrations.MariaDb.Migrations
             modelBuilder.Entity("RIDC.Schema.Enemy", b =>
                 {
                     b.Property<string>("EnemyId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(95)");
 
                     b.Property<string>("Ability")
                         .HasColumnType("longtext");
@@ -217,7 +217,7 @@ namespace RIDC.Database.Migrations.MariaDb.Migrations
             modelBuilder.Entity("RIDC.Schema.Item", b =>
                 {
                     b.Property<string>("ItemId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(95)");
 
                     b.Property<string>("ClassifyType")
                         .HasColumnType("longtext");
@@ -257,7 +257,7 @@ namespace RIDC.Database.Migrations.MariaDb.Migrations
             modelBuilder.Entity("RIDC.Schema.Miscellaneous", b =>
                 {
                     b.Property<string>("Key")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(95)");
 
                     b.Property<string>("Value")
                         .HasColumnType("longtext");
@@ -270,7 +270,7 @@ namespace RIDC.Database.Migrations.MariaDb.Migrations
             modelBuilder.Entity("RIDC.Schema.Power", b =>
                 {
                     b.Property<string>("PowerId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(95)");
 
                     b.Property<string>("Color")
                         .HasColumnType("longtext");
@@ -301,7 +301,7 @@ namespace RIDC.Database.Migrations.MariaDb.Migrations
             modelBuilder.Entity("RIDC.Schema.Skill", b =>
                 {
                     b.Property<string>("SkillId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(95)");
 
                     b.Property<string>("Name")
                         .HasColumnType("longtext");
@@ -314,13 +314,13 @@ namespace RIDC.Database.Migrations.MariaDb.Migrations
             modelBuilder.Entity("RIDC.Schema.Skin", b =>
                 {
                     b.Property<string>("SkinId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(95)");
 
                     b.Property<string>("AvatarId")
                         .HasColumnType("longtext");
 
                     b.Property<string>("CharacterId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(95)");
 
                     b.Property<string>("Content")
                         .HasColumnType("longtext");
@@ -380,7 +380,7 @@ namespace RIDC.Database.Migrations.MariaDb.Migrations
             modelBuilder.Entity("RIDC.Schema.Stage", b =>
                 {
                     b.Property<string>("StageId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(95)");
 
                     b.Property<int>("ApCost")
                         .HasColumnType("int");
@@ -479,7 +479,7 @@ namespace RIDC.Database.Migrations.MariaDb.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ZoneId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(95)");
 
                     b.HasKey("StageId");
 
@@ -491,7 +491,7 @@ namespace RIDC.Database.Migrations.MariaDb.Migrations
             modelBuilder.Entity("RIDC.Schema.Tip", b =>
                 {
                     b.Property<string>("TipId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(95)");
 
                     b.Property<string>("Category")
                         .HasColumnType("longtext");
@@ -510,7 +510,7 @@ namespace RIDC.Database.Migrations.MariaDb.Migrations
             modelBuilder.Entity("RIDC.Schema.Zone", b =>
                 {
                     b.Property<string>("ZoneId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(95)");
 
                     b.Property<bool>("CanPreview")
                         .HasColumnType("tinyint(1)");

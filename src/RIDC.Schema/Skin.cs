@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using RIDC.Shared.Attributes;
 
 namespace RIDC.Schema;
 

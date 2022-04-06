@@ -1,13 +1,15 @@
 using RIDC.App.Updater;
 using RIDC.Provider.Configuration;
+using RIDC.Provider.Configuration.Options;
 using RIDC.Provider.Database;
 using RIDC.Provider.Logger;
+using RIDC.Provider.Storage;
 using Serilog;
 
 var appName = Environment.GetEnvironmentVariable("RIDC_UPDATER_APP_NAME");
 if (string.IsNullOrEmpty(appName))
 {
-    appName = "ridc-app-api";
+    appName = "ridc-app-updater";
 }
 
 #region Logger
@@ -29,6 +31,12 @@ var host = Host.CreateDefaultBuilder(args)
     {
         services.AddRidcDbContext(RidcConfigurationProvider.GetProvider());
         services.AddRidcOptions();
+
+        if (RidcConfigurationProvider.GetProvider().GetOption<UpdaterOption>().HaveStorage)
+        {
+            services.AddStorage(RidcConfigurationProvider.GetProvider());
+        }
+
         services.AddHostedService<Worker>();
     })
     .UseSerilog()

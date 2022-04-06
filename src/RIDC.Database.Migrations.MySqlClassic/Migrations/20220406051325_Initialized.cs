@@ -2,9 +2,9 @@
 
 #nullable disable
 
-namespace RIDC.Database.Migrations.MariaDb.Migrations
+namespace RIDC.Database.Migrations.MySqlClassic.Migrations
 {
-    public partial class Initialize : Migration
+    public partial class Initialized : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -15,7 +15,7 @@ namespace RIDC.Database.Migrations.MariaDb.Migrations
                 name: "Charms",
                 columns: table => new
                 {
-                    CharmId = table.Column<string>(type: "varchar(255)", nullable: false)
+                    CharmId = table.Column<string>(type: "varchar(95)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Sort = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "longtext", nullable: true)
@@ -50,7 +50,7 @@ namespace RIDC.Database.Migrations.MariaDb.Migrations
                 name: "Enemies",
                 columns: table => new
                 {
-                    EnemyId = table.Column<string>(type: "varchar(255)", nullable: false)
+                    EnemyId = table.Column<string>(type: "varchar(95)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     EnemyIndex = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -90,7 +90,7 @@ namespace RIDC.Database.Migrations.MariaDb.Migrations
                 name: "Items",
                 columns: table => new
                 {
-                    ItemId = table.Column<string>(type: "varchar(255)", nullable: false)
+                    ItemId = table.Column<string>(type: "varchar(95)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Name = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -121,7 +121,7 @@ namespace RIDC.Database.Migrations.MariaDb.Migrations
                 name: "Miscellaneous",
                 columns: table => new
                 {
-                    Key = table.Column<string>(type: "varchar(255)", nullable: false)
+                    Key = table.Column<string>(type: "varchar(95)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Value = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4")
@@ -136,7 +136,7 @@ namespace RIDC.Database.Migrations.MariaDb.Migrations
                 name: "Powers",
                 columns: table => new
                 {
-                    PowerId = table.Column<string>(type: "varchar(255)", nullable: false)
+                    PowerId = table.Column<string>(type: "varchar(95)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     OrderNum = table.Column<int>(type: "int", nullable: false),
                     PowerLevel = table.Column<int>(type: "int", nullable: false),
@@ -159,7 +159,7 @@ namespace RIDC.Database.Migrations.MariaDb.Migrations
                 name: "Skills",
                 columns: table => new
                 {
-                    SkillId = table.Column<string>(type: "varchar(255)", nullable: false)
+                    SkillId = table.Column<string>(type: "varchar(95)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Name = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4")
@@ -174,7 +174,7 @@ namespace RIDC.Database.Migrations.MariaDb.Migrations
                 name: "Tips",
                 columns: table => new
                 {
-                    TipId = table.Column<string>(type: "varchar(255)", nullable: false)
+                    TipId = table.Column<string>(type: "varchar(95)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     TipContent = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -192,7 +192,7 @@ namespace RIDC.Database.Migrations.MariaDb.Migrations
                 name: "Zones",
                 columns: table => new
                 {
-                    ZoneId = table.Column<string>(type: "varchar(255)", nullable: false)
+                    ZoneId = table.Column<string>(type: "varchar(95)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     ZoneIndex = table.Column<int>(type: "int", nullable: false),
                     Type = table.Column<string>(type: "longtext", nullable: true)
@@ -223,7 +223,7 @@ namespace RIDC.Database.Migrations.MariaDb.Migrations
                 name: "Characters",
                 columns: table => new
                 {
-                    CharacterId = table.Column<string>(type: "varchar(255)", nullable: false)
+                    CharacterId = table.Column<string>(type: "varchar(95)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Name = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -232,7 +232,7 @@ namespace RIDC.Database.Migrations.MariaDb.Migrations
                     CanUseGeneralPotentialItem = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     PotentialItemId = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    NationPowerId = table.Column<string>(type: "varchar(255)", nullable: true)
+                    NationPowerId = table.Column<string>(type: "varchar(95)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     GroupId = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -278,11 +278,11 @@ namespace RIDC.Database.Migrations.MariaDb.Migrations
                 name: "Stages",
                 columns: table => new
                 {
-                    StageId = table.Column<string>(type: "varchar(255)", nullable: false)
+                    StageId = table.Column<string>(type: "varchar(95)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     LevelId = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    ZoneId = table.Column<string>(type: "varchar(255)", nullable: true)
+                    ZoneId = table.Column<string>(type: "varchar(95)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Code = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -340,9 +340,9 @@ namespace RIDC.Database.Migrations.MariaDb.Migrations
                 name: "relation_CharacterSkill",
                 columns: table => new
                 {
-                    CharactersCharacterId = table.Column<string>(type: "varchar(255)", nullable: false)
+                    CharactersCharacterId = table.Column<string>(type: "varchar(95)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    SkillsSkillId = table.Column<string>(type: "varchar(255)", nullable: false)
+                    SkillsSkillId = table.Column<string>(type: "varchar(95)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
@@ -367,9 +367,9 @@ namespace RIDC.Database.Migrations.MariaDb.Migrations
                 name: "Skins",
                 columns: table => new
                 {
-                    SkinId = table.Column<string>(type: "varchar(255)", nullable: false)
+                    SkinId = table.Column<string>(type: "varchar(95)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    CharacterId = table.Column<string>(type: "varchar(255)", nullable: true)
+                    CharacterId = table.Column<string>(type: "varchar(95)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     AvatarId = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),

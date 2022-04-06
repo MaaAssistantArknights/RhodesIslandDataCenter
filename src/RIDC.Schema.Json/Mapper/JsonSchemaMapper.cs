@@ -46,7 +46,6 @@ public static class JsonSchemaMapper
             skill.Name = "";
             return skill;
         }
-
         var level = jsonSkill.Levels.FirstOrDefault();
         skill.Name = level.GetProperty("name").GetString();
         return skill;

@@ -9,9 +9,9 @@ using RIDC.Provider.Configuration;
 using RIDC.Provider.Configuration.Options;
 using RIDC.Provider.Database;
 using RIDC.Schema;
-using RIDC.Schema.Comparer;
 using RIDC.Schema.Json;
 using RIDC.Schema.Json.Mapper;
+using RIDC.Storage.Base;
 
 // ReSharper disable StringLiteralTypo
 
@@ -51,24 +51,37 @@ public class Worker : BackgroundService
 
         try
         {
-            var sw = new Stopwatch();
-            sw.Start();
-
+            // 本次更新进程 Scope
             using var scope = _serviceProvider.CreateScope();
+
+            // 更新配置项
             var option = scope.ServiceProvider.GetRequiredService<IOptionsSnapshot<UpdaterOption>>();
             if (OptionValidation(option) is false)
             {
                 throw new Exception("更新配置错误");
             }
 
+            // 数据库和 HttpClient
             await using var db = scope.ServiceProvider.GetRequiredService<RhodesIslandDbContext>();
-            db.UpdateDatabase(_logger);
+            var requireUpdate = db.IsRequireUpdate();
             var proxy = string.IsNullOrEmpty(option.Value.Proxy) ? null : new WebProxy(option.Value.Proxy);
             using var client = new HttpClient(new HttpClientHandler
             {
                 Proxy = proxy, UseProxy = proxy is not null, AllowAutoRedirect = true
             });
             client.DefaultRequestHeaders.Add("User-Agent", option.Value.UserAgent);
+            client.Timeout = TimeSpan.FromMinutes(10);
+
+            // 存储服务
+            IRidcStorage? storage = null;
+            if (option.Value.HaveStorage)
+            {
+                storage = scope.ServiceProvider.GetRequiredService<IRidcStorage>();
+            }
+
+            // 计时器
+            var sw = new Stopwatch();
+            sw.Start();
 
             #region Request GitHub
 
@@ -88,19 +101,54 @@ public class Worker : BackgroundService
 
             #region Version Check
 
-            var inStoreVersion = db.Miscellaneous.FirstOrDefault(x => x.Key == "version");
-            if (inStoreVersion?.Value == versionString)
+            var needUpdate = requireUpdate;
+            if (requireUpdate is false)
             {
-                _logger.LogInformation("版本无变化，{LocalVersion}", inStoreVersion.Value);
+                var inStoreVersion = db.Miscellaneous.AsNoTracking().FirstOrDefault(x => x.Key == "version");
+                if (inStoreVersion?.Value == versionString)
+                {
+                    _logger.LogInformation("数据库版本无变化，{DatabaseVersion}", inStoreVersion.Value);
+                }
+                else
+                {
+                    _logger.LogInformation("数据库版本更新：{DatabaseVersion} -> {GitHubVersion}", inStoreVersion?.Value,
+                        versionString);
+                    needUpdate = true;
+                }
+            }
+            else
+            {
+                _logger.LogInformation("数据库架构不存在，数据库版本更新 null -> {GitHubVersion}", versionString);
+            }
+
+            if (storage is not null)
+            {
+                var storageVersion = await storage.GetBlobVersionAsync();
+                if (storageVersion == versionString)
+                {
+                    _logger.LogInformation("存储版本无变化，{StorageVersion}", storageVersion);
+                }
+                else
+                {
+                    _logger.LogInformation("存储版本更新：{StorageVersion} -> {GitHubVersion}", storageVersion, versionString);
+                    needUpdate = true;
+                }
+            }
+
+            if (needUpdate is false)
+            {
                 return;
             }
 
-            _logger.LogInformation("版本更新：{LocalVersion} -> {GitHubVersion}", inStoreVersion, versionString);
+            _logger.LogInformation("开始更新进程，{UpdateStartTime}", DateTimeOffset.Now);
 
             #endregion
 
             #region Get Repo
 
+            sw.Stop();
+            var downloadStopwatch = new Stopwatch();
+            downloadStopwatch.Start();
             switch (option.Value.Method)
             {
                 case "Download":
@@ -145,6 +193,9 @@ public class Worker : BackgroundService
                         #endregion
                     }
             }
+            downloadStopwatch.Stop();
+            _logger.LogInformation("获取 Repo 耗时：{DownloadRepoTime} ms", GetMilliSeconds(downloadStopwatch.ElapsedTicks));
+            sw.Start();
 
             #endregion
 
@@ -153,6 +204,9 @@ public class Worker : BackgroundService
             var jsonCharacterStr =
                 await File.ReadAllTextAsync(
                     Path.Combine(_repoDirectory.FullName, "gamedata/excel/character_table.json"), stoppingToken);
+            var jsonCharacterPatchStr =
+                await File.ReadAllTextAsync(
+                    Path.Combine(_repoDirectory.FullName, "gamedata/excel/char_patch_table.json"), stoppingToken);
             var jsonCharmStr =
                 await File.ReadAllTextAsync(
                     Path.Combine(_repoDirectory.FullName, "gamedata/excel/charm_table.json"), stoppingToken);
@@ -174,6 +228,12 @@ public class Worker : BackgroundService
             var jsonZoneStr =
                 await File.ReadAllTextAsync(
                     Path.Combine(_repoDirectory.FullName, "gamedata/excel/zone_table.json"), stoppingToken);
+            var jsonEnemyStr =
+                await File.ReadAllTextAsync(
+                    Path.Combine(_repoDirectory.FullName, "gamedata/excel/enemy_handbook_table.json"), stoppingToken);
+            var jsonSkinStr =
+                await File.ReadAllTextAsync(
+                    Path.Combine(_repoDirectory.FullName, "gamedata/excel/skin_table.json"), stoppingToken);
 
             #endregion
 
@@ -205,15 +265,36 @@ public class Worker : BackgroundService
 
             #endregion
 
+            #region Skin
+
+            var skinArray = JsonDocument.Parse(jsonSkinStr)
+                .RootElement
+                .GetProperty("charSkins")
+                .EnumerateObject();
+            var skins = skinArray
+                .Select(x => x.Value)
+                .Select(x => x.Deserialize<JsonSkin>())
+                .Select(x => x.ToSkin())
+                .ToList();
+
+            #endregion
+
             #region Character
 
+            var patchCharacterArray = JsonDocument.Parse(jsonCharacterPatchStr)
+                .RootElement
+                .GetProperty("patchChars")
+                .EnumerateObject()
+                .ToList();
             var characterArray = JsonDocument.Parse(jsonCharacterStr)
                 .RootElement
-                .EnumerateObject();
+                .EnumerateObject()
+                .ToList();
+            characterArray.AddRange(patchCharacterArray);
             var characters = characterArray
                 .Select(x => x.Value
                     .Deserialize<JsonCharacter>()
-                    .ToCharacter(x.Name, powers, skills))
+                    .ToCharacter(x.Name, powers, skills, skins))
                 .ToList();
 
             #endregion
@@ -286,93 +367,112 @@ public class Worker : BackgroundService
 
             #endregion
 
+            #region Enemy
+
+            var enemyArray = JsonDocument.Parse(jsonEnemyStr)
+                .RootElement
+                .EnumerateObject();
+            var enemies = enemyArray
+                .Select(x => x.Value)
+                .Select(x => x.Deserialize<JsonEnemy>())
+                .Select(x => x.ToEnemy())
+                .ToList();
+
+            #endregion
+
             #endregion Deserialize Data
 
-            db.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+            GC.Collect();
 
-            #region Query Database
+            #region Rebuild Database
 
-            var dbPowers = await db.Powers.ToListAsync(stoppingToken);
-            var dbSkills = await db.Skills.ToListAsync(stoppingToken);
-            var dbCharacters = await db.Characters
-                .Include(x => x.Skills)
-                .Include(x => x.Nation)
-                .ToListAsync(stoppingToken);
-            var dbStages = await db.Stages.ToListAsync(stoppingToken);
-            var dbZones = await db.Zones
-                .Include(x => x.Stages)
-                .ToListAsync(stoppingToken);
-            var dbCharms = await db.Charms.ToListAsync(stoppingToken);
-            var dbItems = await db.Items.ToListAsync(stoppingToken);
-            var dbTips = await db.Tips.ToListAsync(stoppingToken);
+            await db.Database.EnsureDeletedAsync(stoppingToken);
+            await db.UpdateDatabase(_logger);
 
             #endregion
 
-            #region Object Compare
+            #region Update Database
 
-            dbPowers.Compare(powers, x => x.PowerId, out var modifiedPower, out var deletedPower, out var addedPower);
-            dbSkills.Compare(skills, x => x.SkillId, out var modifiedSkill, out var deletedSkill, out var addedSkill);
-            dbCharacters.Compare(characters, x => x.CharacterId, out var modifiedCharacter, out var deletedCharacter, out var addedCharacter);
-            dbStages.Compare(stages, x => x.StageId, out var modifiedStage, out var deletedStage, out var addedStage);
-            dbZones.Compare(zones, x => x.ZoneId, out var modifiedZone, out var deletedZone, out var addedZone);
-            dbCharms.Compare(charms, x => x.CharmId, out var modifiedCharm, out var deletedCharm, out var addedCharm);
-            dbItems.Compare(items, x => x.ItemId, out var modifiedItem, out var deletedItem, out var addedItem);
-            dbTips.Compare(tips, x => x.TipId, out var modifiedTip, out var deletedTip, out var addedTip);
-
-            #endregion
-
-            #region Database Update
-
-            db.Powers.UpdateRange(modifiedPower);
-            db.Powers.RemoveRange(deletedPower);
-            db.Powers.AddRange(addedPower);
-            db.Skills.UpdateRange(modifiedSkill);
-            db.Skills.RemoveRange(deletedSkill);
-            db.Skills.AddRange(addedSkill);
-            db.Characters.UpdateRange(modifiedCharacter);
-            db.Characters.RemoveRange(deletedCharacter);
-            db.Characters.AddRange(addedCharacter);
-            db.Stages.UpdateRange(modifiedStage);
-            db.Stages.RemoveRange(deletedStage);
-            db.Stages.AddRange(addedStage);
-            db.Zones.UpdateRange(modifiedZone);
-            db.Zones.RemoveRange(deletedZone);
-            db.Zones.AddRange(addedZone);
-            db.Charms.UpdateRange(modifiedCharm);
-            db.Charms.RemoveRange(deletedCharm);
-            db.Charms.AddRange(addedCharm);
-            db.Items.UpdateRange(modifiedItem);
-            db.Items.RemoveRange(deletedItem);
-            db.Items.AddRange(addedItem);
-            db.Tips.UpdateRange(modifiedTip);
-            db.Tips.RemoveRange(deletedTip);
-            db.Tips.AddRange(addedTip);
+            await db.Characters.AddRangeAsync(characters, stoppingToken);
+            await db.Charms.AddRangeAsync(charms, stoppingToken);
+            await db.Zones.AddRangeAsync(zones, stoppingToken);
+            await db.Charms.AddRangeAsync(charms, stoppingToken);
+            await db.Items.AddRangeAsync(items, stoppingToken);
+            await db.Tips.AddRangeAsync(tips, stoppingToken);
+            await db.Enemies.AddRangeAsync(enemies, stoppingToken);
 
             #endregion
 
             #region Set Database Version
 
-            if (inStoreVersion is null)
-            {
-                db.Miscellaneous.Add(new Miscellaneous { Key = "version", Value = versionString });
-            }
-            else
-            {
-                inStoreVersion.Value = versionString;
-                db.Miscellaneous.Update(inStoreVersion);
-            }
+            var version = new Miscellaneous { Key = "version", Value = versionString };
+            await db.Miscellaneous.AddAsync(version, stoppingToken);
 
             #endregion
 
             var changes = await db.SaveChangesAsync(stoppingToken);
 
-            await db.DisposeAsync();
-            scope.Dispose();
-
+            // 数据库更新计时器结束
             sw.Stop();
 
-            _logger.LogInformation("更新运行结束，耗时 {UpdateTime} ms，{UpdateDbChanges} 条数据库修改记录",
-                sw.ElapsedMilliseconds, changes);
+            _logger.LogInformation("数据库更新运行结束，耗时 {DbUpdateTime} ms，{UpdateDbChanges} 条数据库修改记录",
+                GetMilliSeconds(sw.ElapsedTicks), changes);
+
+            // 不存在 Storage 则结束
+            if (storage is null)
+            {
+                await db.DisposeAsync();
+                scope.Dispose();
+                return;
+            }
+
+            sw.Restart();
+
+            #region Storage Update
+
+            var fileKeyPaths = new[] { "avatar", "item", "portrait", "skill", "enemy" };
+
+            foreach (var fileKeyPath in fileKeyPaths)
+            {
+                var localFile = await GetLocalBlobs(fileKeyPath);
+                var remoteFile = await storage.GetBlobsAsync(fileKeyPath) ?? new List<BlobFileInfo>();
+
+                remoteFile.Compare(localFile, out var deletedBlobs, out var addedBlobs);
+
+                var deleteBlobStatus = await storage.DeleteBlobsAsync(deletedBlobs.Select(x => x.Key));
+                if (deleteBlobStatus is false)
+                {
+                    // TODO: 需要寻找更好的方法处理这个错误
+                    throw new Exception("删除文件失败");
+                }
+
+                var addedBlobInfos = addedBlobs
+                    .Select(x => new LocalBlobFileInfo(x.Key, x.Hash, Path.Combine(_repoDirectory.FullName, x.Key)));
+
+                var addBlobStatus = await storage.UploadBlobsAsync(addedBlobInfos);
+                if (addBlobStatus is false)
+                {
+                    // TODO: 需要寻找更好的方法处理这个错误
+                    throw new Exception("上传文件失败");
+                }
+            }
+
+            await storage.DeleteBlobsAsync(new[] { "version.txt" });
+            var versionFilePath = Path.Combine(_repoDirectory.FullName, "version");
+            await using var versionFileStream = File.OpenRead(versionFilePath);
+            var versionFileHash = await versionFileStream.GetMd5();
+            versionFileStream.Close();
+            await storage.UploadBlobsAsync(new[] { new LocalBlobFileInfo("version.txt", versionFileHash, versionFilePath) });
+
+            #endregion
+
+            // 存储更新计时器结束
+            sw.Stop();
+
+            _logger.LogInformation("存储更新运行结束，耗时 {StorageUpdateTime} ms", GetMilliSeconds(sw.ElapsedTicks));
+
+            await db.DisposeAsync();
+            scope.Dispose();
         }
         catch (Exception e)
         {
@@ -400,5 +500,28 @@ public class Worker : BackgroundService
         }
 
         _repoDirectory.Create();
+    }
+
+    private async Task<List<BlobFileInfo>> GetLocalBlobs(string path)
+    {
+        var realPath = Path.Combine(_repoDirectory.FullName, path);
+        var files = Directory.GetFiles(realPath);
+        var blobs = new List<BlobFileInfo>();
+
+        foreach (var file in files)
+        {
+            var key = file.Replace(_repoDirectory.FullName, string.Empty).TrimStart('\\', '/');
+            var stream = File.OpenRead(file);
+            var md5 = await stream.GetMd5();
+            await stream.DisposeAsync();
+            blobs.Add(new BlobFileInfo(key, md5));
+        }
+
+        return blobs;
+    }
+
+    private static string GetMilliSeconds(long ticks)
+    {
+        return ((double)ticks / (TimeSpan.TicksPerMillisecond * 100)).ToString("F5");
     }
 }

@@ -3,30 +3,33 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RIDC.Database;
 
 #nullable disable
 
-namespace RIDC.Database.Migrations.MySql.Migrations
+namespace RIDC.Database.Migrations.PgSql.Migrations
 {
     [DbContext(typeof(RhodesIslandDbContext))]
-    [Migration("20220405155437_Initialize")]
-    partial class Initialize
+    [Migration("20220406051331_Initialized")]
+    partial class Initialized
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "6.0.3")
-                .HasAnnotation("Relational:MaxIdentifierLength", 64);
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
+
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("CharacterSkill", b =>
                 {
                     b.Property<string>("CharactersCharacterId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("text");
 
                     b.Property<string>("SkillsSkillId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("text");
 
                     b.HasKey("CharactersCharacterId", "SkillsSkillId");
 
@@ -38,70 +41,70 @@ namespace RIDC.Database.Migrations.MySql.Migrations
             modelBuilder.Entity("RIDC.Schema.Character", b =>
                 {
                     b.Property<string>("CharacterId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Appellation")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<bool>("CanUseGeneralPotentialItem")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Description")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("DisplayNumber")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("GroupId")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<bool>("IsNotObtainable")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("IsSpChar")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("ItemDesc")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("ItemObtainApproach")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("ItemUsage")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<int>("MaxPotentialLevel")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("Name")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("NationPowerId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Position")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("PotentialItemId")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("Profession")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<int>("Rarity")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("SubProfessionId")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("TagList")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("TeamId")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("TokenKey")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.HasKey("CharacterId");
 
@@ -113,46 +116,46 @@ namespace RIDC.Database.Migrations.MySql.Migrations
             modelBuilder.Entity("RIDC.Schema.Charm", b =>
                 {
                     b.Property<string>("CharmId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("text");
 
                     b.Property<string>("CharmEffect")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("CharmType")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("Desc")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("Icon")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("ItemDesc")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("ItemObtainApproach")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("ItemUsage")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<bool>("ObtainInRandom")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<int>("Price")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("Rarity")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("Sort")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("SpecialObtainApproach")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.HasKey("CharmId");
 
@@ -162,52 +165,52 @@ namespace RIDC.Database.Migrations.MySql.Migrations
             modelBuilder.Entity("RIDC.Schema.Enemy", b =>
                 {
                     b.Property<string>("EnemyId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Ability")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("Attack")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("AttackType")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("Defence")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("Description")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("Endure")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("EnemyIndex")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("EnemyLevel")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("EnemyRace")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("EnemyTags")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<bool>("HideInHandbook")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("IsInvalidKilled")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Name")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("Resistance")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<int>("SortId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasKey("EnemyId");
 
@@ -217,37 +220,37 @@ namespace RIDC.Database.Migrations.MySql.Migrations
             modelBuilder.Entity("RIDC.Schema.Item", b =>
                 {
                     b.Property<string>("ItemId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("text");
 
                     b.Property<string>("ClassifyType")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("Description")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("IconId")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("ItemType")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("ObtainApproach")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<int>("Rarity")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("SortId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("StackIconId")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("Usage")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.HasKey("ItemId");
 
@@ -257,10 +260,10 @@ namespace RIDC.Database.Migrations.MySql.Migrations
             modelBuilder.Entity("RIDC.Schema.Miscellaneous", b =>
                 {
                     b.Property<string>("Key")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Value")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.HasKey("Key");
 
@@ -270,28 +273,28 @@ namespace RIDC.Database.Migrations.MySql.Migrations
             modelBuilder.Entity("RIDC.Schema.Power", b =>
                 {
                     b.Property<string>("PowerId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Color")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<bool>("IsLimited")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("IsRaw")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<int>("OrderNum")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("PowerCode")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<int>("PowerLevel")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("PowerName")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.HasKey("PowerId");
 
@@ -301,10 +304,10 @@ namespace RIDC.Database.Migrations.MySql.Migrations
             modelBuilder.Entity("RIDC.Schema.Skill", b =>
                 {
                     b.Property<string>("SkillId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.HasKey("SkillId");
 
@@ -314,61 +317,61 @@ namespace RIDC.Database.Migrations.MySql.Migrations
             modelBuilder.Entity("RIDC.Schema.Skin", b =>
                 {
                     b.Property<string>("SkinId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("text");
 
                     b.Property<string>("AvatarId")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("CharacterId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Content")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("Description")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("Dialog")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("DrawerName")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("DynamicIllustId")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("DynamicPortraitId")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("IllustId")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("ModelName")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("ObtainApproach")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("PortraitId")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("SkinGroupId")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("SkinGroupName")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<int>("SkinGroupSortIndex")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("SkinName")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<int>("SortId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("Usage")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.HasKey("SkinId");
 
@@ -380,106 +383,106 @@ namespace RIDC.Database.Migrations.MySql.Migrations
             modelBuilder.Entity("RIDC.Schema.Stage", b =>
                 {
                     b.Property<string>("StageId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("text");
 
                     b.Property<int>("ApCost")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("ApFailReturn")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<bool>("BossMark")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("CanBattleReplay")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("CanPractice")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Code")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<int>("CompleteFavor")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("DailyStageDifficulty")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("DangerLevel")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<float>("DangerPoint")
-                        .HasColumnType("float");
+                        .HasColumnType("real");
 
                     b.Property<string>("Description")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("Difficulty")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<int>("EtCost")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("EtFailReturn")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("EtItemId")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<int>("ExpGain")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("GoldGain")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("HardStagedId")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<bool>("HighLightMark")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("IsHardPredefined")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("IsPredefined")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("IsSkillSelectablePredefined")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("IsStoryOnly")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("LevelId")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<int>("LoseExpGain")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("LoseGoldGain")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("Name")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<int>("PassFavor")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("PerformanceStageFlag")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<int>("PracticeTicketCost")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("StageType")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<int>("StoryLineProgress")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("ZoneId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("text");
 
                     b.HasKey("StageId");
 
@@ -491,16 +494,16 @@ namespace RIDC.Database.Migrations.MySql.Migrations
             modelBuilder.Entity("RIDC.Schema.Tip", b =>
                 {
                     b.Property<string>("TipId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Category")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("TipContent")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<float>("Weight")
-                        .HasColumnType("float");
+                        .HasColumnType("real");
 
                     b.HasKey("TipId");
 
@@ -510,37 +513,37 @@ namespace RIDC.Database.Migrations.MySql.Migrations
             modelBuilder.Entity("RIDC.Schema.Zone", b =>
                 {
                     b.Property<string>("ZoneId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("text");
 
                     b.Property<bool>("CanPreview")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("LockedText")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("Type")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<int>("ZoneIndex")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("ZoneNameFirst")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("ZoneNameSecond")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("ZoneNameThird")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("ZoneNameTitleCurrent")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("ZoneNameTitleEx")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("ZoneNameTitleUnCurrent")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.HasKey("ZoneId");
 
