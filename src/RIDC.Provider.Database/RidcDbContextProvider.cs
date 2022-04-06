@@ -72,26 +72,46 @@ public static class RidcDbContextProvider
         {
             case "PgSql":
                 options.UseNpgsql(dbOption.ConnectionString,
-                    o => o.MigrationsAssembly("RIDC.Database.Migrations.PgSql"));
+                    o =>
+                    {
+                        o.MigrationsAssembly("RIDC.Database.Migrations.PgSql");
+                        o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+                    });
                 break;
             case "MySql":
                 options.UseMySql(dbOption.ConnectionString, ServerVersion.Create(
                     new Version(8, 0), ServerType.MySql),
-                    o => o.MigrationsAssembly("RIDC.Database.Migrations.MySql"));
+                    o =>
+                    {
+                        o.MigrationsAssembly("RIDC.Database.Migrations.MySql");
+                        o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+                    });
                 break;
             case "MySqlClassic":
                 options.UseMySql(dbOption.ConnectionString, ServerVersion.Create(
                         new Version(5, 7), ServerType.MySql),
-                    o => o.MigrationsAssembly("RIDC.Database.Migrations.MySqlClassic"));
+                    o =>
+                    {
+                        o.MigrationsAssembly("RIDC.Database.Migrations.MySqlClassic");
+                        o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+                    });
                 break;
             case "MariaDb":
                 options.UseMySql(dbOption.ConnectionString, ServerVersion.Create(
                     new Version(10, 8), ServerType.MariaDb),
-                    o => o.MigrationsAssembly("RIDC.Database.Migrations.MariaDb"));
+                    o =>
+                    {
+                        o.MigrationsAssembly("RIDC.Database.Migrations.MariaDb");
+                        o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+                    });
                 break;
             case "Sqlite":
                 options.UseSqlite(dbOption.ConnectionString,
-                    o => o.MigrationsAssembly("RIDC.Database.Migrations.Sqlite"));
+                    o =>
+                    {
+                        o.MigrationsAssembly("RIDC.Database.Migrations.Sqlite");
+                        o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+                    });
                 break;
             default:
                 throw new Exception("未知的数据库类型");
