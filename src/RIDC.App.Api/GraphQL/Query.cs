@@ -13,6 +13,7 @@ public class Query
     [UseSorting]
     public IQueryable<Character> GetCharacter([ScopedService] RhodesIslandDbContext db)
         => db.Characters
+            .OrderBy(x => x.CharacterId)
             .Include(x => x.Nation)
             .Include(x => x.Skills)
             .Include(x => x.Skins);
@@ -22,63 +23,65 @@ public class Query
     [UseFiltering]
     [UseSorting]
     public IQueryable<Charm> GetCharm([ScopedService] RhodesIslandDbContext db)
-        => db.Charms;
+        => db.Charms.OrderBy(x => x.CharmId);
 
     [UseApplicationDbContext]
     [UsePaging(DefaultPageSize = 10, MaxPageSize = 100)]
     [UseFiltering]
     [UseSorting]
     public IQueryable<Enemy> GetEnemy([ScopedService] RhodesIslandDbContext db)
-        => db.Enemies;
+        => db.Enemies.OrderBy(x => x.EnemyId);
 
     [UseApplicationDbContext]
     [UsePaging(DefaultPageSize = 10, MaxPageSize = 100)]
     [UseFiltering]
     [UseSorting]
     public IQueryable<Item> GetItem([ScopedService] RhodesIslandDbContext db)
-        => db.Items;
+        => db.Items.OrderBy(x => x.ItemId);
 
     [UseApplicationDbContext]
     [UsePaging(DefaultPageSize = 10, MaxPageSize = 100)]
     [UseFiltering]
     [UseSorting]
     public IQueryable<Power> GetPower([ScopedService] RhodesIslandDbContext db)
-        => db.Powers;
+        => db.Powers.OrderBy(x => x.PowerId);
 
     [UseApplicationDbContext]
     [UsePaging(DefaultPageSize = 10, MaxPageSize = 100)]
     [UseFiltering]
     [UseSorting]
     public IQueryable<Skill> GetSkill([ScopedService] RhodesIslandDbContext db)
-        => db.Skills;
+        => db.Skills.OrderBy(x => x.SkillId);
 
     [UseApplicationDbContext]
     [UsePaging(DefaultPageSize = 10, MaxPageSize = 100)]
     [UseFiltering]
     [UseSorting]
     public IQueryable<Skin> GetSkins([ScopedService] RhodesIslandDbContext db)
-        => db.Skins;
+        => db.Skins.OrderBy(x => x.SkinId);
 
     [UseApplicationDbContext]
     [UsePaging(DefaultPageSize = 10, MaxPageSize = 100)]
     [UseFiltering]
     [UseSorting]
     public IQueryable<Stage> GetStage([ScopedService] RhodesIslandDbContext db)
-        => db.Stages;
+        => db.Stages.OrderBy(x => x.StageId);
 
     [UseApplicationDbContext]
     [UsePaging(DefaultPageSize = 10, MaxPageSize = 100)]
     [UseFiltering]
     [UseSorting]
     public IQueryable<Tip> GetTip([ScopedService] RhodesIslandDbContext db)
-        => db.Tips;
+        => db.Tips.OrderBy(x => x.TipId);
 
     [UseApplicationDbContext]
     [UsePaging(DefaultPageSize = 10, MaxPageSize = 100)]
     [UseFiltering]
     [UseSorting]
     public IQueryable<Zone> GetZone([ScopedService] RhodesIslandDbContext db)
-        => db.Zones.Include(x => x.Stages);
+        => db.Zones
+            .OrderBy(x => x.ZoneId)
+            .Include(x => x.Stages);
 
     [UseApplicationDbContext]
     public Miscellaneous GetVersion([ScopedService] RhodesIslandDbContext db)
